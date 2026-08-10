@@ -3,95 +3,287 @@
 {% block title %}CalisLanka | Appointment{% endblock %}
 
 {% block content %}
+
 <div class="page active" id="appointment">
-      <section class="inner-hero shell">
-        <div>
-          <span class="kicker">BOOK YOUR SESSION</span>
-          <h1>Your strongest chapter starts <span class="yellow">here.</span></h1>
+
+  <section class="booking shell">
+
+    <!-- BOOKING FORM / SUCCESS MESSAGE -->
+    <div class="booking-panel reveal">
+
+      {% if submitted %}
+
+        <!-- SUCCESS MESSAGE -->
+        <div class="success show" id="success">
+
+          <div class="success-icon">
+            ✓
+          </div>
+
+          <span class="kicker">
+            REQUEST RECEIVED
+          </span>
+
+          <h2>
+            Thank you for choosing CalisLanka.
+          </h2>
+
           <p>
-            Tell us what you want to achieve. Our team will contact you to confirm
-            the most suitable session, coach and time.
+            Your appointment request has been received.
+            Our team will review your preferred date and time
+            and contact you by phone or WhatsApp to confirm
+            your session.
           </p>
-        </div>
-      </section>
 
-      <section class="booking shell">
-        <div class="booking-panel reveal">
-          <div id="formContent">
-            <h2>Appointment details</h2>
-            <p>No online payment is required.</p>
+          <a
+            href="{% url 'website:home' %}"
+            class="button"
+          >
+            Return Home →
+          </a>
 
-            <form id="appointmentForm">
-              <div class="field-grid">
-                <label>Full name<input required placeholder="Your name"></label>
-                <label>Phone number<input required placeholder="+94 77 000 0000"></label>
-                <label>Email address<input required type="email" placeholder="you@email.com"></label>
-                <label>Age<input type="number" placeholder="Your age"></label>
-              </div>
-
-              <label>
-                Preferred program
-                <select required>
-                  <option value="">Select a program</option>
-                  <option>Personal Training</option>
-                  <option>Online Coaching</option>
-                  <option>Strength & Conditioning</option>
-                  <option>Nutrition Plans</option>
-                </select>
-              </label>
-
-              <div class="field-grid">
-                <label>Preferred date<input required type="date"></label>
-                <label>
-                  Preferred time
-                  <select required>
-                    <option value="">Select time</option>
-                    <option>Morning</option>
-                    <option>Afternoon</option>
-                    <option>Evening</option>
-                  </select>
-                </label>
-              </div>
-
-              <label>
-                Training experience
-                <select>
-                  <option>Complete beginner</option>
-                  <option>Beginner</option>
-                  <option>Intermediate</option>
-                  <option>Advanced</option>
-                </select>
-              </label>
-
-              <label>
-                Your goals or message
-                <textarea rows="5" placeholder="Tell us what you want to achieve..."></textarea>
-              </label>
-
-              <button class="button submit" type="submit">Request Appointment →</button>
-              <div class="form-note">Our team will contact you to confirm availability.</div>
-            </form>
-          </div>
-
-          <div class="success" id="success">
-            <div class="success-icon">✓</div>
-            <span class="kicker">REQUEST RECEIVED</span>
-            <h2>Thank you for choosing CalisLanka.</h2>
-            <p>We have received your booking request and will contact you shortly to confirm the details.</p>
-          </div>
         </div>
 
-        <aside class="booking-side">
-          <img class="reveal" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85" alt="Studio">
+      {% else %}
 
-          <div class="info-card reveal">
-            <h3>Studio Information</h3>
-            <div class="info-row"><strong>Location</strong><small>Colombo, Sri Lanka</small></div>
-            <div class="info-row"><strong>Opening Hours</strong><small>Monday–Sunday • 6:00 AM–9:00 PM</small></div>
-            <div class="info-row"><strong>Phone</strong><small>+94 77 000 0000</small></div>
-            <div class="info-row"><strong>Email</strong><small>hello@calislanka.lk</small></div>
-          </div>
-        </aside>
-      </section>
+        <!-- APPOINTMENT FORM -->
+        <div id="formContent">
+
+          <h2>Appointment details</h2>
+
+          <p>
+            No online payment is required.
+            Our team will contact you to confirm your session.
+          </p>
+
+          <form
+            id="appointmentForm"
+            method="post"
+            action="{% url 'website:appointment' %}"
+          >
+
+            {% csrf_token %}
+
+            <!-- NON-FIELD ERRORS -->
+            {% if form.non_field_errors %}
+              <div class="form-errors">
+
+                {% for error in form.non_field_errors %}
+                  <span>
+                    {{ error }}
+                  </span>
+                {% endfor %}
+
+              </div>
+            {% endif %}
+
+
+            <!-- PERSONAL DETAILS -->
+            <div class="field-grid">
+
+              <!-- FULL NAME -->
+              <label>
+                Full name
+
+                {{ form.full_name }}
+
+                {% for error in form.full_name.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+
+              <!-- PHONE -->
+              <label>
+                Phone number
+
+                {{ form.phone }}
+
+                {% for error in form.phone.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+
+              <!-- EMAIL -->
+              <label>
+                Email address
+
+                {{ form.email }}
+
+                {% for error in form.email.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+
+              <!-- AGE -->
+              <label>
+                Age
+
+                {{ form.age }}
+
+                {% for error in form.age.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+            </div>
+
+
+            <!-- PROGRAM -->
+            <label>
+              Preferred program
+
+              {{ form.program }}
+
+              {% for error in form.program.errors %}
+                <span class="field-error">
+                  {{ error }}
+                </span>
+              {% endfor %}
+            </label>
+
+
+            <!-- DATE + TIME -->
+            <div class="field-grid">
+
+              <!-- DATE -->
+              <label>
+                Preferred date
+
+                {{ form.preferred_date }}
+
+                {% for error in form.preferred_date.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+
+              <!-- TIME -->
+              <label>
+                Preferred time
+
+                {{ form.preferred_time }}
+
+                {% for error in form.preferred_time.errors %}
+                  <span class="field-error">
+                    {{ error }}
+                  </span>
+                {% endfor %}
+              </label>
+
+            </div>
+
+
+            <!-- EXPERIENCE -->
+            <label>
+              Training experience
+
+              {{ form.experience }}
+
+              {% for error in form.experience.errors %}
+                <span class="field-error">
+                  {{ error }}
+                </span>
+              {% endfor %}
+            </label>
+
+
+            <!-- MESSAGE -->
+            <label>
+              Your goals or message
+
+              {{ form.message }}
+
+              {% for error in form.message.errors %}
+                <span class="field-error">
+                  {{ error }}
+                </span>
+              {% endfor %}
+            </label>
+
+
+            <!-- SUBMIT BUTTON -->
+            <button
+              class="button submit"
+              type="submit"
+            >
+              Request Appointment →
+            </button>
+
+
+            <div class="form-note">
+              Your appointment is not automatically confirmed.
+              Our team will contact you by phone or WhatsApp
+              to arrange the final session time.
+            </div>
+
+          </form>
+
+        </div>
+
+      {% endif %}
+
     </div>
+
+
+    <!-- STUDIO INFORMATION -->
+    <aside class="booking-side">
+
+      <img
+        class="reveal"
+        src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1200&q=85"
+        alt="CalisLanka Studio"
+      >
+
+
+      <div class="info-card reveal">
+
+        <h3>Studio Information</h3>
+
+        <div class="info-row">
+          <strong>Location</strong>
+          <small>Colombo, Sri Lanka</small>
+        </div>
+
+        <div class="info-row">
+          <strong>Opening Hours</strong>
+          <small>
+            Monday–Sunday • 6:00 AM–9:00 PM
+          </small>
+        </div>
+
+        <div class="info-row">
+          <strong>Phone</strong>
+          <small>
+            +94 77 000 0000
+          </small>
+        </div>
+
+        <div class="info-row">
+          <strong>Email</strong>
+          <small>
+            hello@calislanka.lk
+          </small>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </section>
+
+</div>
+
 {% endblock %}

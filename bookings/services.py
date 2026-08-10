@@ -139,7 +139,6 @@ WhatsApp:
             message=text_message,
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[recipient],
-            fail_silently=False,
             html_message=html_message,
         )
 

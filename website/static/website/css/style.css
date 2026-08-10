@@ -770,11 +770,39 @@
       background:#090909;
       transition:.25s;
     }
+
+    
     input:focus,select:focus,textarea:focus{
       border-color:rgba(255,212,0,.75);
       box-shadow:0 0 0 3px rgba(255,212,0,.08);
     }
     textarea{resize:vertical}
+
+    /* Django form validation errors */
+    .field-error{
+      display:block;
+      margin-top:5px;
+      color:#ff8a8a;
+      font-size:.72rem;
+      line-height:1.4;
+    }
+
+    .form-errors{
+      display:grid;
+      gap:6px;
+      padding:14px 16px;
+      border:1px solid rgba(255,80,80,.30);
+      border-radius:12px;
+      background:rgba(255,80,80,.07);
+      color:#ff9b9b;
+      font-size:.8rem;
+      line-height:1.45;
+    }
+
+    .form-errors span{
+      display:block;
+    }
+
     .submit{width:100%}
     .form-note{text-align:center;color:#666;font-size:.75rem}
 

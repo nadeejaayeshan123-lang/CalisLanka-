@@ -1,15 +1,42 @@
 from pathlib import Path
 import os
+
 from dotenv import load_dotenv
+
+
+# ============================================================
+# BASE DIRECTORY
+# ============================================================
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# ============================================================
+# ENVIRONMENT VARIABLES
+# ============================================================
+
 load_dotenv(BASE_DIR / ".env", override=True)
 
-# Development-only key. Move this to .env before production deployment.
-SECRET_KEY = "django-insecure-development-only-calislanka"
+
+# ============================================================
+# SECURITY
+# ============================================================
+
+# Development-only fallback.
+# For production, SECRET_KEY should be stored in .env.
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "django-insecure-development-only-calislanka",
+)
+
 DEBUG = True
+
 ALLOWED_HOSTS = []
+
+
+# ============================================================
+# APPLICATIONS
+# ============================================================
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -18,9 +45,16 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    # CalisLanka applications
     "website",
     "bookings",
 ]
+
+
+# ============================================================
+# MIDDLEWARE
+# ============================================================
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -32,7 +66,17 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
+# ============================================================
+# URL CONFIGURATION
+# ============================================================
+
 ROOT_URLCONF = "config.urls"
+
+
+# ============================================================
+# TEMPLATES
+# ============================================================
 
 TEMPLATES = [
     {
@@ -49,10 +93,19 @@ TEMPLATES = [
     },
 ]
 
+
+# ============================================================
+# WSGI
+# ============================================================
+
 WSGI_APPLICATION = "config.wsgi.application"
 
-# Temporary local database for frontend/template development only.
-# This will be replaced by PostgreSQL when the backend stage begins.
+
+# ============================================================
+# DATABASE
+# PostgreSQL
+# ============================================================
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -64,69 +117,78 @@ DATABASES = {
     }
 }
 
+
+# ============================================================
+# PASSWORD VALIDATION
+# ============================================================
+
 AUTH_PASSWORD_VALIDATORS = []
 
+
+# ============================================================
+# LANGUAGE / TIMEZONE
+# ============================================================
+
 LANGUAGE_CODE = "en-us"
+
 TIME_ZONE = "Asia/Colombo"
+
 USE_I18N = True
+
 USE_TZ = True
 
+
+# ============================================================
+# STATIC FILES
+# ============================================================
+
 STATIC_URL = "static/"
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+
+# ============================================================
+# DEFAULT PRIMARY KEY
+# ============================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-EMAIL_BACKEND = os.getenv(
-    "EMAIL_BACKEND",
-    "django.core.mail.backends.console.EmailBackend"
-)
 
-EMAIL_HOST = os.getenv(
-    "EMAIL_HOST",
-    ""
-)
+# ============================================================
+# EMAIL
+# Django 6.1 Mailer Configuration
+# ============================================================
 
-EMAIL_PORT = int(
-    os.getenv(
-        "EMAIL_PORT",
-        "587"
-    )
-)
+# DEVELOPMENT:
+# Appointment notification emails are printed in the
+# VS Code / PowerShell terminal instead of being sent
+# to a real inbox.
+#
+# We will replace this with real SMTP configuration later.
 
-EMAIL_HOST_USER = os.getenv(
-    "EMAIL_HOST_USER",
-    ""
-)
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.console.EmailBackend",
+    }
+}
 
-EMAIL_HOST_PASSWORD = os.getenv(
-    "EMAIL_HOST_PASSWORD",
-    ""
-)
 
-EMAIL_USE_TLS = (
-    os.getenv(
-        "EMAIL_USE_TLS",
-        "True"
-    ).lower()
-    == "true"
-)
-
-EMAIL_USE_SSL = (
-    os.getenv(
-        "EMAIL_USE_SSL",
-        "False"
-    ).lower()
-    == "true"
-)
-
+# Address displayed as the sender during development.
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    EMAIL_HOST_USER or "webmaster@localhost"
+    "webmaster@localhost",
 )
 
-# Fallback only.
-# The owner can override this later from Django Admin.
+
+# Fallback recipient for appointment notifications.
+#
+# The owner can override this later through:
+#
+# Django Admin
+# -> Bookings
+# -> Booking notification settings
+
 ADMIN_BOOKING_EMAIL = os.getenv(
     "ADMIN_BOOKING_EMAIL",
-    ""
+    "",
 )
