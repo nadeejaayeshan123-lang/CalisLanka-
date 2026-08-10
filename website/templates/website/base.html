@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}CalisLanka{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}CalisLanka — Sri Lanka's first dedicated calisthenics studio.{% endblock %}" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'website/css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<header class="site-header">
+    <nav class="nav">
+      <a href="{% url 'website:home' %}" class="brand"><span>Calis</span><strong>Lanka</strong></a>
+
+      <div class="nav-links" id="navLinks">
+        <a href="{% url 'website:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+        <a href="{% url 'website:blog' %}" class="{% if request.resolver_match.url_name == 'blog' %}active{% endif %}">Blog</a>
+        <a href="{% url 'website:appointment' %}" class="{% if request.resolver_match.url_name == 'appointment' %}active{% endif %}">Appointment</a>
+      </div>
+
+      <a href="{% url 'website:appointment' %}" class="button small">Book Now</a>
+      <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+<footer class="pdf-footer">
+    <div class="pdf-footer-grid">
+      <div class="pdf-footer-about">
+        <a href="{% url 'website:home' %}" class="brand">
+          <span>Calis</span><strong>Lanka</strong>
+        </a>
+
+        <p>
+          Sri Lanka's first dedicated calisthenics studio.<br>
+          Coaching, strength & conditioning and nutrition<br>
+          built around bodyweight mastery.
+        </p>
+
+        <a href="#" class="pdf-instagram" aria-label="Instagram">◎</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>NAVIGATE</h4>
+        <a href="{% url 'website:home' %}">Home</a>
+        <a href="{% url 'website:blog' %}">Blog</a>
+        <a href="{% url 'website:appointment' %}">Appointment</a>
+      </div>
+
+      <div class="footer-col pdf-contact">
+        <h4>CONTACT</h4>
+        <span>⌖ No. 42, Marine Drive, Colombo 03, Sri Lanka</span>
+        <a href="tel:+94770000000">☎ +94 77 000 0000</a>
+        <a href="mailto:train@calislanka.lk">✉ train@calislanka.lk</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom pdf-footer-bottom">
+      <span>© 2026 CalisLanka. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="{% static 'website/js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
