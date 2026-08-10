@@ -1,6 +1,10 @@
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env", override=True)
 
 # Development-only key. Move this to .env before production deployment.
 SECRET_KEY = "django-insecure-development-only-calislanka"
@@ -15,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "website",
+    "bookings",
 ]
 
 MIDDLEWARE = [
@@ -50,8 +55,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 # This will be replaced by PostgreSQL when the backend stage begins.
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+        "PORT": os.getenv("DB_PORT", "5432"),
     }
 }
 
@@ -66,3 +75,58 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.console.EmailBackend"
+)
+
+EMAIL_HOST = os.getenv(
+    "EMAIL_HOST",
+    ""
+)
+
+EMAIL_PORT = int(
+    os.getenv(
+        "EMAIL_PORT",
+        "587"
+    )
+)
+
+EMAIL_HOST_USER = os.getenv(
+    "EMAIL_HOST_USER",
+    ""
+)
+
+EMAIL_HOST_PASSWORD = os.getenv(
+    "EMAIL_HOST_PASSWORD",
+    ""
+)
+
+EMAIL_USE_TLS = (
+    os.getenv(
+        "EMAIL_USE_TLS",
+        "True"
+    ).lower()
+    == "true"
+)
+
+EMAIL_USE_SSL = (
+    os.getenv(
+        "EMAIL_USE_SSL",
+        "False"
+    ).lower()
+    == "true"
+)
+
+DEFAULT_FROM_EMAIL = os.getenv(
+    "DEFAULT_FROM_EMAIL",
+    EMAIL_HOST_USER or "webmaster@localhost"
+)
+
+# Fallback only.
+# The owner can override this later from Django Admin.
+ADMIN_BOOKING_EMAIL = os.getenv(
+    "ADMIN_BOOKING_EMAIL",
+    ""
+)
