@@ -155,34 +155,60 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # ============================================================
-# EMAIL
-# Django 6.1 Mailer Configuration
+# EMAIL / SMTP
+# Django 6.1 MAILERS Configuration
 # ============================================================
-
-# DEVELOPMENT:
-# Appointment notification emails are printed in the
-# VS Code / PowerShell terminal instead of being sent
-# to a real inbox.
-#
-# We will replace this with real SMTP configuration later.
 
 MAILERS = {
     "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": os.getenv(
+                "EMAIL_HOST",
+                "smtp.gmail.com",
+            ),
+            "port": int(
+                os.getenv(
+                    "EMAIL_PORT",
+                    "587",
+                )
+            ),
+            "username": os.getenv(
+                "EMAIL_HOST_USER"
+            ),
+            "password": os.getenv(
+                "EMAIL_HOST_PASSWORD"
+            ),
+            "use_tls": os.getenv(
+                "EMAIL_USE_TLS",
+                "True",
+            ).lower() == "true",
+            "timeout": 10,
+        },
     }
 }
 
 
-# Address displayed as the sender during development.
+# ============================================================
+# DEFAULT EMAIL SENDER
+# ============================================================
+
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    "webmaster@localhost",
+    os.getenv(
+        "EMAIL_HOST_USER",
+        "webmaster@localhost",
+    ),
 )
 
 
-# Fallback recipient for appointment notifications.
+# ============================================================
+# ADMIN BOOKING NOTIFICATION EMAIL
+# ============================================================
+
+# Default recipient for new appointment notifications.
 #
-# The owner can override this later through:
+# This can later be overridden through:
 #
 # Django Admin
 # -> Bookings
