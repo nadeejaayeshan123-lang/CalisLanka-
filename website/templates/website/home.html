@@ -137,6 +137,61 @@
         </div>
       </section>
 
+      <!-- STUDIO PHOTO POPUP -->
+      <div
+        class="studio-popup-overlay"
+        id="studioPopup"
+        hidden
+        aria-hidden="true"
+      >
+        <div
+          class="studio-popup"
+          role="dialog"
+          aria-modal="true"
+          aria-label="CalisLanka studio gallery"
+        >
+          <button
+            class="studio-popup-close"
+            id="studioPopupClose"
+            type="button"
+            aria-label="Close gallery"
+          >
+            ×
+          </button>
+
+          <button
+            class="studio-popup-arrow studio-popup-prev"
+            id="studioPopupPrev"
+            type="button"
+            aria-label="Previous photo"
+          >
+            ‹
+          </button>
+
+          <div class="studio-popup-image-wrap">
+            <img
+              id="studioPopupImage"
+              src=""
+              alt="CalisLanka studio photo"
+            >
+
+            <div
+              class="studio-popup-counter"
+              id="studioPopupCounter"
+            ></div>
+          </div>
+
+          <button
+            class="studio-popup-arrow studio-popup-next"
+            id="studioPopupNext"
+            type="button"
+            aria-label="Next photo"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+
       <!-- WHY CALISLANKA -->
       <section class="content shell pdf-why-section">
         <div class="pdf-why-copy reveal">
