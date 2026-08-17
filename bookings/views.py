@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import AppointmentForm
-from .services import notify_admin_new_appointment
+from .services import send_appointment_notification
 
 
 def appointment_request(request):
@@ -13,16 +13,23 @@ def appointment_request(request):
         form = AppointmentForm(request.POST)
 
         if form.is_valid():
+            # Save appointment to PostgreSQL first
             appointment = form.save()
 
-            email_sent = notify_admin_new_appointment(
+            # Send appointment details to admin email
+            email_sent = send_appointment_notification(
                 appointment
             )
 
             if email_sent:
-                appointment.email_notification_sent = True
-                appointment.save(
-                    update_fields=["email_notification_sent"]
+                print(
+                    "Appointment saved and admin "
+                    "notification email sent successfully."
+                )
+            else:
+                print(
+                    "Appointment saved, but admin "
+                    "notification email was not sent."
                 )
 
             return HttpResponseRedirect(

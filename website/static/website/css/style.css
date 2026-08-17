@@ -147,9 +147,9 @@
     .button.small{min-height:50px;padding-inline:28px}
 
     .hero{
-      min-height:100svh;
-      padding-top:155px;
-      padding-bottom:70px;
+      min-height:80svh;
+      padding-top:105px;
+      padding-bottom:18px;
       display:grid;
       grid-template-columns:.9fr 1.1fr;
       align-items:center;
@@ -1047,11 +1047,11 @@
     #home{background:#050505}
 
     .pdf-home-hero{
-      min-height:920px;
+      min-height:720px;
       padding-top:150px;
-      padding-bottom:55px;
+      padding-bottom:60px;
       grid-template-columns:.93fr 1.07fr;
-      gap:70px;
+      gap:56px;
     }
 
     .pdf-hero-copy{padding-left:0}
@@ -1073,7 +1073,7 @@
     .pdf-hero-copy .btn-row{margin-top:27px}
 
     .pdf-hero-visual{
-      min-height:710px;
+      min-height:590px;
       height:auto;
     }
 
@@ -2350,7 +2350,7 @@
     }
 
     .pdf-studio-seven .section-title{
-      margin-bottom:38px;
+      margin-bottom:10px;
     }
 
     .studio-seven-grid{
@@ -2551,9 +2551,8 @@
       }
     }
 
-  
 /* ============================================================
-   HOME STUDIO PHOTO POPUP
+   HOME STUDIO PHOTO POPUP — FINAL
 ============================================================ */
 
 .studio-photo{
@@ -2561,14 +2560,14 @@
 }
 
 
-/* Hide popup until opened */
+/* Hide popup completely until JavaScript opens it */
 
 .studio-popup-overlay[hidden]{
   display:none !important;
 }
 
 
-/* Background overlay */
+/* Full-screen backdrop */
 
 .studio-popup-overlay{
   position:fixed;
@@ -2581,74 +2580,100 @@
 
   padding:30px;
 
-  background:rgba(0,0,0,.48);
+  opacity:0;
 
-  backdrop-filter:blur(7px);
-  -webkit-backdrop-filter:blur(7px);
+  background-color:rgba(0,0,0,0);
+
+  backdrop-filter:blur(0);
+  -webkit-backdrop-filter:blur(0);
+
+  transition:
+    opacity .24s cubic-bezier(.22,1,.36,1),
+    background-color .24s ease,
+    backdrop-filter .26s ease,
+    -webkit-backdrop-filter .26s ease;
 }
 
 
-/* Main popup panel */
+/* Open backdrop */
 
-.studio-popup-overlay{
-  position:fixed;
-  inset:0;
-  z-index:9999;
+.studio-popup-overlay.is-open{
+  opacity:1;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  /*
+    Keep the page visible behind the image.
+    This is intentionally lighter than the old popup.
+  */
+  background-color:rgba(0,0,0,.28);
 
-  padding:30px;
-
-  background:rgba(0,0,0,.48);
-
-  backdrop-filter:blur(7px);
-  -webkit-backdrop-filter:blur(7px);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px);
 }
+
+
+/* ============================================================
+   POPUP CONTAINER
+   No large black panel behind the photo.
+============================================================ */
 
 .studio-popup{
   position:relative;
 
-  width:min(900px,90vw);
-  max-height:82vh;
+  width:min(1000px,94vw);
+  max-height:88vh;
 
-  padding:26px 76px;
+  padding:0 72px;
 
   display:flex;
   align-items:center;
   justify-content:center;
 
-  border:1px solid var(--line);
-  border-radius:28px;
+  /*
+    Remove the old black rectangle around the image.
+  */
+  border:0;
+  border-radius:0;
+  background:transparent;
 
-  background:rgba(18,18,18,.78);
+  backdrop-filter:none;
+  -webkit-backdrop-filter:none;
 
-  backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
+  box-shadow:none;
 
-  box-shadow:
-    0 24px 80px rgba(0,0,0,.42);
+  opacity:0;
+
+  transform:
+    scale(.965)
+    translateY(7px);
+
+  transition:
+    opacity .22s ease-out,
+    transform .28s cubic-bezier(.22,1,.36,1);
 }
 
-.studio-popup-close,
-.studio-popup-arrow{
-  background:rgba(18,18,18,.72);
+
+.studio-popup-overlay.is-open .studio-popup{
+  opacity:1;
+
+  transform:
+    scale(1)
+    translateY(0);
 }
 
 
-/* Image area */
+/* ============================================================
+   POPUP IMAGE
+============================================================ */
 
 .studio-popup-image-wrap{
   width:100%;
+
   display:grid;
   place-items:center;
 
   position:relative;
 }
 
-
-/* Popup image */
 
 .studio-popup-image-wrap img{
   display:block;
@@ -2657,7 +2682,7 @@
   height:auto;
 
   max-width:100%;
-  max-height:70vh;
+  max-height:78vh;
 
   object-fit:contain;
 
@@ -2665,6 +2690,31 @@
 
   user-select:none;
   -webkit-user-drag:none;
+
+  box-shadow:
+    0 22px 65px rgba(0,0,0,.30);
+}
+
+
+/* ============================================================
+   POPUP CONTROLS
+============================================================ */
+
+.studio-popup-close,
+.studio-popup-arrow{
+  z-index:5;
+
+  border:1px solid rgba(255,255,255,.14);
+
+  background:rgba(10,10,10,.62);
+
+  color:#f7f7f7;
+
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.24);
 }
 
 
@@ -2673,10 +2723,8 @@
 .studio-popup-close{
   position:absolute;
 
-  top:16px;
-  right:16px;
-
-  z-index:5;
+  top:8px;
+  right:8px;
 
   width:44px;
   height:44px;
@@ -2687,36 +2735,25 @@
 
   padding:0 0 2px 0;
 
-  border:1px solid var(--line);
   border-radius:50%;
-
-  background:rgba(18,18,18,.72);
-
-  color:#f7f7f7;
 
   font-size:1.65rem;
   font-weight:300;
   line-height:1;
 
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.30);
-
   transform-origin:center;
 
   transition:
-    background .25s ease,
-    color .25s ease,
-    border-color .25s ease,
-    transform .25s ease;
+    background .20s ease,
+    color .20s ease,
+    border-color .20s ease,
+    transform .22s cubic-bezier(.22,1,.36,1);
 }
 
 
-/* Close hover */
 .studio-popup-close:hover{
   color:#050505;
+
   background:var(--yellow);
   border-color:var(--yellow);
 
@@ -2724,14 +2761,12 @@
 }
 
 
-/* Previous / Next buttons */
+/* Previous / next buttons */
 
 .studio-popup-arrow{
   position:absolute;
 
   top:50%;
-
-  z-index:5;
 
   width:48px;
   height:48px;
@@ -2740,35 +2775,23 @@
   align-items:center;
   justify-content:center;
 
-  transform:translateY(-50%);
-
   padding:0 0 2px 0;
 
-  border:1px solid var(--line);
   border-radius:50%;
-
-  background:rgba(18,18,18,.72);
-
-  color:#f7f7f7;
 
   font-size:2rem;
   font-weight:300;
   line-height:1;
 
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.28);
+  transform:translateY(-50%);
 
   transition:
-    background .25s ease,
-    color .25s ease,
-    border-color .25s ease,
-    transform .25s ease;
+    background .20s ease,
+    color .20s ease,
+    border-color .20s ease,
+    transform .22s cubic-bezier(.22,1,.36,1);
 }
 
-/* Arrow hover */
 
 .studio-popup-arrow:hover{
   color:#050505;
@@ -2778,17 +2801,13 @@
 }
 
 
-/* Previous button */
-
 .studio-popup-prev{
-  left:16px;
+  left:8px;
 }
 
 
-/* Next button */
-
 .studio-popup-next{
-  right:16px;
+  right:8px;
 }
 
 
@@ -2798,31 +2817,546 @@
   position:absolute;
 
   left:50%;
-  bottom:12px;
+  bottom:8px;
 
   transform:translateX(-50%);
 
   padding:7px 12px;
 
-  border:1px solid var(--line);
+  border:1px solid rgba(255,255,255,.13);
   border-radius:999px;
 
-  background:rgba(7,7,7,.72);
+  background:rgba(7,7,7,.62);
 
   color:#d0d0d0;
 
   font-size:.7rem;
   letter-spacing:.12em;
 
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
 }
 
 
-/* Prevent page scroll while popup is open */
+/* Stop page scrolling while popup is open */
 
 body.studio-popup-open{
   overflow:hidden;
+}
+
+
+/* ============================================================
+   CURSOR FOLLOW YELLOW GLOW
+============================================================ */
+
+.cursor-glow{
+  position:fixed;
+
+  left:0;
+  top:0;
+
+  width:400px;
+  height:400px;
+
+  border-radius:50%;
+
+  pointer-events:none;
+
+  /*
+    Keep the yellow cursor glow above normal page content,
+    but below the navigation and popup.
+  */
+  z-index:900;
+
+  opacity:0;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,212,0,.18) 0%,
+      rgba(255,212,0,.11) 22%,
+      rgba(255,212,0,.055) 40%,
+      rgba(255,212,0,.02) 57%,
+      rgba(255,212,0,0) 72%
+    );
+
+  transform:translate3d(-50%,-50%,0);
+
+  transition:
+    opacity .24s ease;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+
+/* Keep photographs and videos above the cursor glow */
+
+.hero-image,
+.pdf-hero-image,
+.program-card,
+.pdf-program-card,
+.gallery figure,
+.studio-photo,
+.service-card,
+.masonry figure,
+.video-main,
+.pdf-featured-video,
+.pdf-video-card,
+.story-main-image,
+.pdf-story-photo,
+.coach-main-photo,
+.pdf-coach-photo,
+.journey-gallery figure,
+.pdf-journey-photo-row figure,
+.coach-training-grid figure,
+.pdf-moments-grid figure,
+.booking-side img{
+  position:relative;
+  z-index:3;
+}
+
+
+/* Navigation stays above the glow */
+
+.site-header{
+  z-index:1000 !important;
+}
+
+
+/* Popup always stays above the cursor glow */
+
+.studio-popup-overlay{
+  z-index:9999;
+}
+
+
+@media (any-hover:none){
+  .cursor-glow{
+    display:none;
+  }
+}
+
+
+/* ============================================================
+   FULL-WIDTH MARQUEE / RIBBON — SINGLE LINE, LEFT -> RIGHT
+   JavaScript builds two identical inline groups inside ONE track.
+============================================================ */
+
+.marquee,
+.pdf-marquee{
+  position:relative;
+
+  left:50%;
+
+  width:100vw;
+  max-width:none;
+
+  margin-left:-50vw;
+  margin-right:-50vw;
+  margin-bottom:60px;
+
+  overflow:hidden;
+
+  border-block:1px solid var(--line);
+  background:#080808;
+}
+
+
+/*
+  IMPORTANT:
+  The track itself is ONE horizontal flex row.
+  flex-wrap:nowrap + white-space:nowrap prevents any second line.
+*/
+.marquee > div,
+.pdf-marquee > div{
+  display:flex !important;
+  flex-flow:row nowrap !important;
+  align-items:center;
+
+  width:max-content;
+  min-width:max-content;
+
+  padding:0 !important;
+  margin:0 !important;
+
+  white-space:nowrap !important;
+
+  line-height:1;
+
+  will-change:transform;
+
+  /*
+    The old CSS marquee animation is disabled.
+    main.js drives the seamless loop with Web Animations API.
+  */
+  animation:none !important;
+}
+
+
+/*
+  Each repeated half of the loop is also forced to remain
+  on one single horizontal line.
+*/
+.marquee .marquee-group,
+.pdf-marquee .marquee-group{
+  display:inline-flex !important;
+  flex:0 0 auto !important;
+  flex-flow:row nowrap !important;
+  align-items:center;
+
+  width:max-content;
+
+  padding:18px 0;
+
+  margin:0;
+
+  white-space:nowrap !important;
+
+  color:#C6C6C6;
+
+  font:
+    700 .8rem/1
+    "Space Grotesk",
+    sans-serif;
+
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+
+
+/*
+  Individual phrase copies live beside each other,
+  never above/below each other.
+*/
+.marquee .marquee-phrase,
+.pdf-marquee .marquee-phrase{
+  display:inline-block;
+  flex:0 0 auto;
+
+  padding-right:38px;
+
+  white-space:nowrap !important;
+}
+
+
+/* ============================================================
+   STUDIO GALLERY — SPREAD SCROLL-SYNC CINEMATIC
+   SPREAD ENTRANCE -> STICKY HOLD -> ORDERED SEQUENTIAL FADE
+   Controlled entirely by main.js + requestAnimationFrame()
+============================================================ */
+
+@media (min-width:1051px){
+
+  /*
+    The section creates a compact sticky scroll range.
+
+    ENTRANCE:
+    All seven photos begin spread around the final composition and
+    move into the grid TOGETHER as the Studio section enters.
+
+    STICKY:
+    The complete grid remains at its normal scale.
+
+    EXIT:
+    As soon as sticky scrolling begins, Photo 01 -> Photo 07 fade
+    away in order. The next section rises underneath at the same time.
+  */
+  .pdf-studio-seven{
+    position:relative;
+
+    height:calc(100svh + 620px) !important;
+    min-height:0 !important;
+
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+
+    overflow:visible;
+    background:transparent;
+  }
+
+
+  /*
+    Sticky cinematic viewport.
+  */
+  .pdf-studio-seven > .shell{
+    position:sticky;
+    top:0;
+    z-index:4;
+
+    width:min(
+      1480px,
+      calc(100% - 48px)
+    );
+
+    height:100svh;
+    min-height:100svh;
+
+    margin:0 auto;
+
+    padding-top:30px;
+    padding-bottom:18px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
+
+    overflow:visible;
+    background:transparent;
+  }
+
+
+  /*
+    Heading remains visible while the spread composition assembles.
+    JavaScript starts moving/fading it almost immediately after the
+    sticky phase begins.
+  */
+  .pdf-studio-seven .section-title{
+    position:relative;
+    z-index:6;
+
+    flex:0 0 auto;
+
+    margin-bottom:24px;
+
+    transform-origin:center top;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+
+    backface-visibility:hidden;
+  }
+
+
+  /*
+    The whole 7-photo composition NEVER zooms.
+
+    main.js permanently keeps the grid at scale(1).
+  */
+  .pdf-studio-seven .studio-seven-grid{
+    position:relative;
+    z-index:5;
+    isolation:isolate;
+
+    flex:1 1 auto;
+
+    width:100%;
+    min-height:0;
+
+    height:min(
+      72svh,
+      720px
+    );
+
+    grid-template-rows:
+      minmax(0,1fr)
+      minmax(0,1fr)
+      minmax(0,1.18fr);
+
+    transform:
+      translate3d(0,0,0)
+      scale(1);
+
+    transform-origin:center center;
+
+    transition:none !important;
+
+    overflow:visible;
+    background:transparent;
+
+    will-change:transform;
+
+    backface-visibility:hidden;
+  }
+
+
+  /*
+    Individual photos are driven directly by scroll progress.
+
+    JavaScript gives each card a different SPREAD starting position,
+    but all seven use the SAME entrance progress, so they converge
+    into the final grid together.
+
+    During exit, JavaScript fades Photo 01 -> Photo 07 in order.
+  */
+  .pdf-studio-seven .studio-photo{
+    opacity:0;
+
+    transform:
+      translate3d(0,0,0)
+      rotate(0deg)
+      scale(1);
+
+    transform-origin:center center;
+
+    filter:blur(8px);
+
+    transition:none !important;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+
+    backface-visibility:hidden;
+
+    pointer-events:auto;
+  }
+
+
+  /*
+    Prevent generic reveal styles from competing with the
+    requestAnimationFrame Studio animation.
+  */
+  .pdf-studio-seven .section-title.reveal,
+  .pdf-studio-seven .section-title.reveal.visible,
+  .pdf-studio-seven .studio-seven-grid.reveal,
+  .pdf-studio-seven .studio-seven-grid.reveal.visible,
+  .pdf-studio-seven .studio-photo.reveal,
+  .pdf-studio-seven .studio-photo.reveal.visible{
+    transition:none !important;
+  }
+
+
+  /*
+    Disable ordinary hover zoom in the scroll-cinematic gallery.
+  */
+  .pdf-studio-seven .studio-photo img{
+    transform:none !important;
+    transition:none !important;
+  }
+
+
+  .pdf-studio-seven .studio-photo:hover img{
+    transform:none !important;
+  }
+
+
+  .pdf-studio-seven .studio-photo.is-scroll-faded{
+    pointer-events:none;
+  }
+
+
+  /*
+    Pull WHY CALISLANKA underneath the final sticky range.
+
+    Because the fade sequence now starts very early, the next section
+    is already able to appear while Photo 01 -> Photo 07 disappear.
+    This prevents a dead black gap.
+  */
+  #home .pdf-why-section{
+    position:relative;
+    z-index:2;
+
+    margin-top:-55svh !important;
+
+    padding-top:120px !important;
+    padding-bottom:115px !important;
+
+    will-change:
+      transform,
+      opacity;
+  }
+
+}
+
+
+/* ============================================================
+   STUDIO CINEMATIC — TABLET / MOBILE FALLBACK
+============================================================ */
+
+@media(max-width:1050px){
+
+  .marquee,
+  .pdf-marquee{
+    margin-bottom:58px;
+  }
+
+  #home .pdf-why-section{
+    margin-top:0 !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+
+
+  .pdf-studio-seven{
+    height:auto !important;
+    min-height:auto !important;
+
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+
+    padding-top:80px !important;
+    padding-bottom:80px !important;
+
+    overflow:visible;
+  }
+
+
+  .pdf-studio-seven > .shell{
+    position:relative;
+    top:auto;
+    z-index:auto;
+
+    height:auto;
+    min-height:auto;
+
+    padding-top:0;
+    padding-bottom:0;
+
+    display:block;
+    overflow:visible;
+  }
+
+
+  .pdf-studio-seven .section-title{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+
+
+  .pdf-studio-seven .studio-seven-grid{
+    height:auto;
+    transform:none !important;
+  }
+
+
+  .pdf-studio-seven .studio-photo{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+
+}
+
+
+@media(max-width:760px){
+
+  .marquee,
+  .pdf-marquee{
+    margin-bottom:46px;
+  }
+
+
+  .marquee .marquee-group,
+  .pdf-marquee .marquee-group{
+    padding:15px 0;
+    font-size:.72rem;
+  }
+
+
+  .marquee .marquee-phrase,
+  .pdf-marquee .marquee-phrase{
+    padding-right:30px;
+  }
+
 }
 
 
@@ -2833,36 +3367,42 @@ body.studio-popup-open{
 @media(max-width:760px){
 
   .studio-popup-overlay{
-    padding:18px;
+    padding:16px;
   }
+
 
   .studio-popup{
-    width:94vw;
+    width:100%;
+
+    max-height:90vh;
 
     padding:
-      58px
-      16px
-      72px;
-
-    border-radius:22px;
+      54px
+      8px
+      70px;
   }
 
+
   .studio-popup-image-wrap img{
-    max-height:65vh;
+    max-width:100%;
+    max-height:72vh;
+
     border-radius:14px;
   }
 
+
   .studio-popup-close{
-    top:12px;
-    right:12px;
+    top:2px;
+    right:2px;
 
     width:42px;
     height:42px;
   }
 
+
   .studio-popup-arrow{
     top:auto;
-    bottom:14px;
+    bottom:8px;
 
     width:46px;
     height:46px;
@@ -2870,16 +3410,2470 @@ body.studio-popup-open{
     transform:none;
   }
 
+
   .studio-popup-prev{
-    left:18px;
+    left:8px;
   }
+
 
   .studio-popup-next{
-    right:18px;
+    right:8px;
   }
 
+
   .studio-popup-counter{
-    bottom:27px;
+    bottom:18px;
+  }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media (prefers-reduced-motion:reduce){
+
+  #home .pdf-why-section{
+    margin-top:0 !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+
+  .marquee > div,
+  .pdf-marquee > div{
+    transform:none !important;
+    animation:none !important;
+  }
+
+
+  .studio-photo,
+  .studio-photo img,
+  .studio-popup-overlay,
+  .studio-popup{
+    transition:none !important;
+  }
+
+
+  .pdf-studio-seven{
+    height:auto !important;
+    min-height:auto !important;
+    margin-top:0 !important;
+    padding-top:112px !important;
+    padding-bottom:110px !important;
+  }
+
+
+  .pdf-studio-seven > .shell{
+    position:relative !important;
+    top:auto !important;
+    height:auto !important;
+    min-height:auto !important;
+    padding-top:0 !important;
+    padding-bottom:0 !important;
+  }
+
+
+  .pdf-studio-seven .section-title,
+  .pdf-studio-seven .studio-seven-grid,
+  .pdf-studio-seven .studio-photo{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+
+}
+
+/* ============================================================
+   WHY CALISLANKA -> PROGRAMS SCROLL TRANSITION
+   FONT-SAFE VERSION
+
+   IMPORTANT:
+   JavaScript may still write transform/filter inline while scrolling,
+   but these rules intentionally block those properties on text-heavy
+   elements so the browser keeps the original font rendering.
+
+   The scroll transition therefore uses OPACITY for WHY copy,
+   feature cards and Programs, preserving the existing typography.
+============================================================ */
+
+@media (min-width:1051px){
+
+  #home .pdf-why-section{
+    position:relative;
+    overflow:visible;
+  }
+
+
+  /* ==========================================================
+     WHY COPY — PRESERVE ORIGINAL TYPOGRAPHY
+  ========================================================== */
+
+  #home .pdf-why-copy{
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+
+    will-change:opacity;
+  }
+
+
+  #home .pdf-why-copy .kicker{
+    color:var(--yellow);
+
+    font-family:Inter,system-ui,sans-serif;
+    font-size:.75rem;
+    font-weight:700;
+    letter-spacing:.18em;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+    will-change:auto;
+  }
+
+
+  #home .pdf-why-copy h2{
+    margin:15px 0 25px;
+
+    font:
+      600
+      clamp(3.25rem,5vw,5.25rem)/1.08
+      "Space Grotesk",
+      sans-serif;
+
+    letter-spacing:-.055em;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+    will-change:auto;
+  }
+
+
+  #home .pdf-why-copy p{
+    max-width:610px;
+    margin:0;
+
+    color:#848484;
+
+    font-family:Inter,system-ui,sans-serif;
+    font-size:.88rem;
+    font-weight:400;
+    line-height:1.65;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+    will-change:auto;
+  }
+
+
+  /* ==========================================================
+     FEATURE CARDS — FADE ONLY, NO TEXT-RENDERING SHIFT
+  ========================================================== */
+
+  #home .pdf-feature-card{
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+
+    will-change:opacity;
+  }
+
+
+  #home .pdf-feature-card:hover{
+    transform:none !important;
+    border-color:rgba(255,212,0,.33);
+  }
+
+
+  /* ==========================================================
+     PROGRAMS — FADE IN WITHOUT GPU TEXT SHIFT
+  ========================================================== */
+
+  #programs.pdf-programs-section{
+    position:relative;
+    z-index:3;
+
+    transform:none !important;
+    filter:none !important;
+
+    will-change:opacity;
+  }
+
+}
+
+
+/* ============================================================
+   TABLET / MOBILE
+============================================================ */
+
+@media(max-width:1050px){
+
+  #home .pdf-why-copy,
+  #home .pdf-why-copy .kicker,
+  #home .pdf-why-copy h2,
+  #home .pdf-why-copy p,
+  #home .pdf-feature-card,
+  #programs.pdf-programs-section{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+
+    will-change:auto !important;
+  }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #home .pdf-why-copy,
+  #home .pdf-why-copy .kicker,
+  #home .pdf-why-copy h2,
+  #home .pdf-why-copy p,
+  #home .pdf-feature-card,
+  #programs.pdf-programs-section{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible !important;
+
+    will-change:auto !important;
+  }
+
+}
+
+/* ============================================================
+   PROGRAMS — ELEGANT TWO-WAY SCROLL-SYNC TRANSITION
+   NO ZOOM / NO SCALE / NO STICKY CINEMATIC
+
+   JavaScript controls each program card directly from scroll:
+
+   ENTER:
+   - soft opacity reveal
+   - bottom mask opens
+   - image drifts gently into position
+
+   EXIT:
+   - opacity fades out
+   - top mask closes
+   - image drifts gently away
+
+   IMPORTANT:
+   - no scale() on program cards
+   - no blur on program text
+   - no full-list transform
+   - normal document flow
+============================================================ */
+
+
+/* ============================================================
+   DESKTOP PROGRAMS
+============================================================ */
+
+@media (min-width:1051px){
+
+  /* ----------------------------------------------------------
+     PROGRAMS SECTION
+     Keep the section in normal page flow.
+  ---------------------------------------------------------- */
+
+  #programs.pdf-programs-section{
+    position:relative;
+    z-index:3;
+
+    height:auto !important;
+    min-height:auto !important;
+
+    padding-top:72px !important;
+    padding-bottom:100px !important;
+
+    margin-top:0;
+
+    overflow:visible;
+
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    background:transparent;
+  }
+
+
+  /* ----------------------------------------------------------
+     SAFETY FOR OLD CINEMATIC WRAPPER
+
+     If a previous JS version created this wrapper,
+     it behaves like an ordinary block.
+  ---------------------------------------------------------- */
+
+  #programs .programs-cinematic-stage{
+    position:relative !important;
+    top:auto !important;
+
+    width:100%;
+
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:0 !important;
+
+    display:block;
+
+    overflow:visible;
+
+    background:transparent;
+
+    isolation:auto;
+  }
+
+
+  /* ----------------------------------------------------------
+     PROGRAMS HEADING
+     No scaling / movement / blur.
+  ---------------------------------------------------------- */
+
+  #programs .pdf-programs-heading{
+    position:relative;
+    z-index:4;
+
+    opacity:1;
+
+    transform:none !important;
+    filter:none !important;
+
+    will-change:auto;
+  }
+
+
+  #programs .pdf-programs-heading.reveal,
+  #programs .pdf-programs-heading.reveal.visible{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    transition:none !important;
+  }
+
+
+  /* ----------------------------------------------------------
+     PROGRAM LIST
+     Normal list — no whole-list scroll cinematic.
+  ---------------------------------------------------------- */
+
+  #programs .pdf-program-list{
+    position:relative;
+    z-index:4;
+
+    width:100%;
+
+    display:grid;
+    gap:17px;
+
+    transform:none !important;
+    filter:none !important;
+
+    transition:none !important;
+  }
+
+
+  #programs .pdf-program-list.reveal,
+  #programs .pdf-program-list.reveal.visible{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    transition:none !important;
+  }
+
+
+  /* ----------------------------------------------------------
+     INDIVIDUAL PROGRAM TILE
+
+     JS controls:
+     - opacity
+     - clip-path
+     - border-color
+
+     Card itself never scales or translates.
+  ---------------------------------------------------------- */
+
+  #programs .pdf-program-card{
+    position:relative;
+
+    min-height:340px;
+
+    display:grid;
+    grid-template-columns:32% 68%;
+
+    overflow:hidden;
+
+    border:1px solid rgba(255,255,255,.17);
+    border-radius:18px;
+
+    background:#090909;
+
+    /*
+      Safe pre-JS starting state.
+
+      JS immediately replaces these values according
+      to actual viewport scroll progress.
+    */
+    opacity:.12;
+
+    clip-path:
+      inset(
+        0 0 14% 0
+        round 18px
+      );
+
+    transform:none !important;
+    filter:none !important;
+
+    transition:
+      border-color .3s ease,
+      background .3s ease !important;
+
+    will-change:
+      opacity,
+      clip-path,
+      border-color;
+
+    backface-visibility:visible;
+  }
+
+
+  /*
+    Keep hover elegant without moving or scaling the card.
+  */
+  #programs .pdf-program-card:hover{
+    transform:none !important;
+
+    border-color:rgba(255,212,0,.34);
+
+    background:#0d0d0d;
+  }
+
+
+  /* ----------------------------------------------------------
+     PROGRAM IMAGE
+     JS applies only a tiny horizontal translate.
+     No zoom / scale.
+  ---------------------------------------------------------- */
+
+  #programs .pdf-program-image{
+    position:relative;
+
+    min-height:340px;
+
+    overflow:hidden;
+
+    background:#111;
+  }
+
+
+  #programs .pdf-program-image img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transform:translate3d(0,0,0);
+
+    transition:none !important;
+
+    will-change:transform;
+
+    backface-visibility:hidden;
+  }
+
+
+  /*
+    Disable the old image hover zoom on desktop because
+    scroll-sync JS owns the image transform.
+  */
+  #programs
+  .pdf-program-card:hover
+  .pdf-program-image img{
+    transition:none !important;
+  }
+
+
+  /* ----------------------------------------------------------
+     PROGRAM TEXT
+     Keep typography untouched for crisp font rendering.
+  ---------------------------------------------------------- */
+
+  #programs .pdf-program-info{
+    padding:46px 52px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+    transform:none !important;
+    filter:none !important;
+
+    backface-visibility:visible;
+  }
+
+
+  #programs .pdf-program-number{
+    color:var(--yellow);
+
+    font:
+      700
+      .88rem
+      "Space Grotesk";
+  }
+
+
+  #programs .pdf-program-info h3{
+    margin:16px 0 11px;
+
+    font:
+      600
+      1.72rem
+      "Space Grotesk";
+
+    letter-spacing:-.035em;
+
+    transform:none !important;
+    filter:none !important;
+  }
+
+
+  #programs .pdf-program-info p{
+    max-width:720px;
+
+    margin:0 0 18px;
+
+    color:#838383;
+
+    font-family:
+      Inter,
+      system-ui,
+      sans-serif;
+
+    font-size:.88rem;
+    line-height:1.55;
+
+    transform:none !important;
+    filter:none !important;
+  }
+
+
+  #programs .pdf-program-info a{
+    width:max-content;
+
+    color:white;
+
+    font-size:.78rem;
+    font-weight:700;
+
+    transition:color .2s ease;
+  }
+
+
+  #programs .pdf-program-info a:hover{
+    color:var(--yellow);
+  }
+
+
+  /* ----------------------------------------------------------
+     STATS
+     Remain directly after Programs in normal flow.
+  ---------------------------------------------------------- */
+
+  #home .pdf-stats{
+    position:relative;
+    z-index:3;
+
+    margin-top:0;
+
+    background:#050505;
+  }
+
+}
+
+
+/* ============================================================
+   CURSOR YELLOW GLOW — ABOVE NORMAL CONTENT
+   BELOW NAVIGATION AND POPUP
+============================================================ */
+
+.cursor-glow{
+  z-index:900 !important;
+}
+
+
+.site-header{
+  z-index:1000 !important;
+}
+
+
+.studio-popup-overlay{
+  z-index:9999 !important;
+}
+
+
+/* ============================================================
+   TABLET — NORMAL PROGRAMS
+============================================================ */
+
+@media(max-width:1050px){
+
+  #programs.pdf-programs-section{
+    position:relative;
+
+    height:auto !important;
+    min-height:auto !important;
+
+    padding-top:72px !important;
+    padding-bottom:100px !important;
+
+    overflow:visible;
+
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+  }
+
+
+  #programs .programs-cinematic-stage{
+    position:relative !important;
+    top:auto !important;
+
+    width:100%;
+
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:0 !important;
+
+    display:block;
+
+    overflow:visible;
+
+    background:transparent;
+  }
+
+
+  #programs .pdf-programs-heading,
+  #programs .pdf-program-list,
+  #programs .pdf-program-card{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    clip-path:none !important;
+  }
+
+
+  #programs .pdf-program-image img{
+    opacity:1 !important;
+
+    transform:none !important;
+
+    transition:
+      transform .7s ease !important;
+  }
+
+
+  /*
+    Restore ordinary hover image zoom outside desktop
+    scroll-sync mode.
+  */
+  #programs
+  .pdf-program-card:hover
+  .pdf-program-image img{
+    transform:scale(1.045) !important;
+  }
+
+}
+
+
+/* ============================================================
+   MOBILE PROGRAMS
+============================================================ */
+
+@media(max-width:760px){
+
+  #programs.pdf-programs-section{
+    height:auto !important;
+
+    padding-top:65px !important;
+    padding-bottom:80px !important;
+  }
+
+
+  #programs .programs-cinematic-stage{
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:0 !important;
+
+    overflow:visible;
+  }
+
+
+  #programs .pdf-program-card{
+    min-height:0;
+
+    grid-template-columns:1fr;
+
+    opacity:1 !important;
+
+    clip-path:none !important;
+
+    transform:none !important;
+  }
+
+
+  #programs .pdf-program-image{
+    min-height:275px;
+    height:275px;
+  }
+
+
+  #programs .pdf-program-info{
+    padding:29px 25px 33px;
+  }
+
+}
+
+
+/* ============================================================
+   PROGRAMS — REDUCED MOTION
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #programs.pdf-programs-section{
+    position:relative !important;
+
+    height:auto !important;
+    min-height:auto !important;
+
+    padding-top:72px !important;
+    padding-bottom:100px !important;
+
+    overflow:visible !important;
+
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+  }
+
+
+  #programs .programs-cinematic-stage{
+    position:relative !important;
+    top:auto !important;
+
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:0 !important;
+
+    display:block !important;
+
+    overflow:visible !important;
+
+    background:transparent !important;
+  }
+
+
+  #programs .pdf-programs-heading,
+  #programs .pdf-program-list,
+  #programs .pdf-program-card,
+  #programs .pdf-program-image img{
+    opacity:1 !important;
+
+    transform:none !important;
+    filter:none !important;
+
+    clip-path:none !important;
+
+    transition:none !important;
+  }
+
+}
+
+
+/* ============================================================
+   HOME STATS — SCROLL FADE + COUNT-UP REVEAL
+============================================================ */
+
+/*
+  Number initial state.
+  JavaScript adds .stat-count-visible
+  when the Stats section enters the viewport.
+*/
+
+#home .pdf-stat strong{
+  opacity:0;
+
+  transform:
+    translate3d(
+      0,
+      22px,
+      0
+    );
+
+  filter:blur(4px);
+
+  transition:
+    opacity .65s cubic-bezier(.22,1,.36,1),
+    transform .75s cubic-bezier(.22,1,.36,1),
+    filter .65s ease;
+
+  will-change:
+    opacity,
+    transform,
+    filter;
+}
+
+
+/* Number becomes fully visible */
+
+#home .pdf-stat strong.stat-count-visible{
+  opacity:1;
+
+  transform:
+    translate3d(
+      0,
+      0,
+      0
+    );
+
+  filter:blur(0);
+}
+
+
+/* ============================================================
+   STAT LABEL
+============================================================ */
+
+#home .pdf-stat span{
+  opacity:.55;
+
+  transform:
+    translate3d(
+      0,
+      10px,
+      0
+    );
+
+  transition:
+    opacity .65s cubic-bezier(.22,1,.36,1),
+    transform .7s cubic-bezier(.22,1,.36,1);
+}
+
+
+/*
+  Label becomes visible together with its number.
+*/
+
+#home .pdf-stat.stat-visible span{
+  opacity:1;
+
+  transform:
+    translate3d(
+      0,
+      0,
+      0
+    );
+}
+
+
+/* ============================================================
+   KEEP ORIGINAL STAT TYPOGRAPHY
+============================================================ */
+
+#home .pdf-stat strong{
+  display:block;
+
+  color:var(--yellow);
+
+  font:
+    700
+    clamp(2.6rem,4vw,4.2rem)
+    "Space Grotesk",
+    sans-serif;
+
+  letter-spacing:-.055em;
+}
+
+
+#home .pdf-stat span{
+  display:block;
+
+  margin-top:4px;
+
+  color:#8d8d8d;
+
+  font-family:
+    Inter,
+    system-ui,
+    sans-serif;
+
+  font-size:.65rem;
+
+  letter-spacing:.13em;
+
+  text-transform:uppercase;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media(max-width:760px){
+
+  #home .pdf-stat strong{
+    transform:
+      translate3d(
+        0,
+        14px,
+        0
+      );
+  }
+
+
+  #home .pdf-stat strong.stat-count-visible{
+    transform:none;
+  }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #home .pdf-stat strong,
+  #home .pdf-stat span{
+    opacity:1 !important;
+
+    transform:none !important;
+
+    filter:none !important;
+
+    transition:none !important;
+  }
+
+}
+
+/* ============================================================
+   HOME CTA — TRUE SCROLL-SYNC FADE IN
+
+   The whole CTA card fades according to the CURRENT scroll position.
+
+   - no timer
+   - no zoom
+   - no blur
+   - no font transform
+   - stop scrolling = fade stops
+   - scroll upward = fade reverses
+============================================================ */
+
+@media (min-width:1051px){
+
+  /*
+    Neutralise the generic .reveal animation on the CTA wrapper.
+    JavaScript controls the inner card instead.
+  */
+  #home .pdf-cta-wrap,
+  #home .pdf-cta-wrap.reveal,
+  #home .pdf-cta-wrap.reveal.visible{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+  }
+
+  /*
+    Only hide the CTA after JavaScript confirms that the
+    scroll-sync system is active. This avoids an invisible CTA
+    if JavaScript is disabled or fails to load.
+  */
+  #home .pdf-cta-wrap.cta-scroll-ready .pdf-cta-card{
+    opacity:0;
+  }
+
+  #home .pdf-cta-card{
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+
+    will-change:opacity;
+
+    backface-visibility:visible;
+  }
+
+  /*
+    Keep all CTA typography completely untouched.
+  */
+  #home .pdf-cta-card .kicker,
+  #home .pdf-cta-card h2,
+  #home .pdf-cta-card p,
+  #home .pdf-cta-card .button{
+    transform:none !important;
+    filter:none !important;
+  }
+
+}
+
+
+/* ============================================================
+   CTA — TABLET / MOBILE FALLBACK
+============================================================ */
+
+@media(max-width:1050px){
+
+  #home .pdf-cta-wrap,
+  #home .pdf-cta-card,
+  #home .pdf-cta-card .kicker,
+  #home .pdf-cta-card h2,
+  #home .pdf-cta-card p,
+  #home .pdf-cta-card .button{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+  }
+
+}
+
+
+/* ============================================================
+   CTA — REDUCED MOTION
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #home .pdf-cta-wrap,
+  #home .pdf-cta-card,
+  #home .pdf-cta-card .kicker,
+  #home .pdf-cta-card h2,
+  #home .pdf-cta-card p,
+  #home .pdf-cta-card .button{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+  }
+
+}
+
+/* ============================================================
+   BLOG / ABOUT US + APPOINTMENT — REFINED MOTION SYSTEM
+   ------------------------------------------------------------
+   HOME PAGE IS NOT TARGETED BY ANY RULE IN THIS BLOCK.
+
+   BLOG / ABOUT US:
+   - seamless hero glow (fixes the visible rectangular gradient edge)
+   - story entrance + scroll-synced exit
+   - journey photos entrance + scroll-synced exit
+   - coach entrance + scroll-synced exit
+   - achievements: simple one-time entrance + cursor hover pop/highlight
+   - latest moments: one-by-one depth reveal + scroll-synced exit
+   - featured video: gentle entrance + exit
+   - timeline: automatic yellow-line animation, NOT scroll-synced
+   - CTA: clean scroll-synced fade
+
+   APPOINTMENT:
+   - existing form-safe cinematic motion is preserved
+============================================================ */
+
+
+/* ============================================================
+   BLOG HERO — SEAMLESS YELLOW AMBIENT GLOW FIX
+============================================================ */
+
+/*
+  The older .blog-hero::after used a blurred rectangular element.
+  On some viewport sizes its filter box produced a visible vertical edge.
+  Remove that old layer completely and use one fully transparent radial
+  gradient whose edges disappear before the element bounds.
+*/
+#blog .blog-hero::after,
+#blog .pdf-blog-hero.blog-hero::after{
+  content:none !important;
+  display:none !important;
+}
+
+
+/* ============================================================
+   ACHIEVEMENTS — SIMPLE ONE-TIME ENTRANCE + HOVER
+   Not scroll-synced.
+============================================================ */
+
+#blog .pdf-achievements-section.achievement-enter-ready
+.section-title.achievement-enter-item,
+#blog .pdf-achievements-section.achievement-enter-ready
+.pdf-achievement-card.achievement-enter-item{
+  opacity:0;
+  transform:translate3d(0,30px,0) scale(.985);
+  filter:none;
+}
+
+#blog .pdf-achievements-section.achievement-enter-ready
+.section-title.achievement-enter-item{
+  transition:
+    opacity .72s cubic-bezier(.22,1,.36,1),
+    transform .82s cubic-bezier(.22,1,.36,1) !important;
+}
+
+#blog .pdf-achievements-section.achievement-enter-ready
+.pdf-achievement-card.achievement-enter-item{
+  transition:
+    opacity .68s cubic-bezier(.22,1,.36,1),
+    transform .42s cubic-bezier(.22,1,.36,1),
+    border-color .28s ease,
+    background .28s ease,
+    box-shadow .32s ease !important;
+  transition-delay:var(--achievement-delay,0ms) !important;
+  transform-origin:center center;
+  will-change:opacity,transform;
+}
+
+#blog .pdf-achievements-section.achievement-enter-ready
+.achievement-enter-item.achievement-entered{
+  opacity:1;
+  transform:translate3d(0,0,0) scale(1);
+}
+
+#blog .pdf-achievements-section
+.pdf-achievement-card.achievement-entered:hover{
+  transform:translate3d(0,-10px,0) scale(1.025) !important;
+  border-color:rgba(255,212,0,.72) !important;
+  background:
+    radial-gradient(circle at 28% 18%,rgba(255,212,0,.12),transparent 48%),
+    linear-gradient(145deg,rgba(255,212,0,.075),rgba(255,255,255,.012)) !important;
+  box-shadow:
+    0 20px 55px rgba(0,0,0,.34),
+    0 0 0 1px rgba(255,212,0,.10),
+    0 0 42px rgba(255,212,0,.11);
+}
+
+#blog .pdf-achievements-section
+.pdf-achievement-card.achievement-entered:hover > span{
+  text-shadow:0 0 18px rgba(255,212,0,.42);
+}
+
+
+/* ============================================================
+   TIMELINE — AUTOMATIC ANIMATION
+   Triggered once when the section enters the viewport.
+   The line is NOT linked to scroll progress.
+============================================================ */
+
+#blog .pdf-timeline-section.timeline-auto-ready
+.section-title.timeline-heading-auto{
+  opacity:0;
+  transform:translate3d(0,24px,0);
+  filter:none;
+  transition:
+    opacity .72s cubic-bezier(.22,1,.36,1),
+    transform .82s cubic-bezier(.22,1,.36,1) !important;
+}
+
+#blog .pdf-timeline-section.timeline-auto-active
+.section-title.timeline-heading-auto{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline{
+  position:relative;
+  border-top-color:transparent;
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::before,
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:1px;
+  pointer-events:none;
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::before{
+  z-index:0;
+  background:rgba(255,255,255,.22);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+  z-index:1;
+  background:linear-gradient(90deg,var(--yellow),rgba(255,212,0,.78));
+  transform:scaleX(0);
+  transform-origin:left center;
+  box-shadow:0 0 18px rgba(255,212,0,.30);
+  transition:transform 2.8s cubic-bezier(.22,1,.36,1);
+}
+
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline::after{
+  transform:scaleX(1);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline article{
+  z-index:2;
+  opacity:.24;
+  transform:translate3d(0,12px,0);
+  filter:none;
+  transition:
+    opacity .58s cubic-bezier(.22,1,.36,1),
+    transform .66s cubic-bezier(.22,1,.36,1) !important;
+  transition-delay:var(--timeline-delay,0ms) !important;
+}
+
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline article{
+  opacity:1;
+  transform:translate3d(0,0,0);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline-dot{
+  background:rgba(255,255,255,.20);
+  box-shadow:none;
+  transform:scale(.72);
+  transition:
+    transform .36s cubic-bezier(.22,1,.36,1),
+    background .32s ease,
+    box-shadow .32s ease !important;
+  transition-delay:var(--timeline-delay,0ms) !important;
+}
+
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline-dot{
+  background:var(--yellow);
+  box-shadow:0 0 18px rgba(255,212,0,.85);
+  transform:scale(1);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline time{
+  color:#666;
+  transition:color .34s ease !important;
+  transition-delay:var(--timeline-delay,0ms) !important;
+}
+
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline time{
+  color:var(--yellow);
+}
+
+
+/* ============================================================
+   BLOG / ABOUT US — DESKTOP SCROLL-SYNC SYSTEM
+============================================================ */
+
+@media (min-width:1051px){
+
+  #blog.blog-scroll-ready{
+    background:#050505;
+  }
+
+
+  /* ----------------------------------------------------------
+     GENERIC REVEAL NEUTRALISATION FOR JS-MANAGED BLOG ITEMS
+  ---------------------------------------------------------- */
+
+  #blog.blog-scroll-ready .blog-scroll-item,
+  #blog.blog-scroll-ready .blog-scroll-item.reveal,
+  #blog.blog-scroll-ready .blog-scroll-item.reveal.visible{
+    transition:none !important;
+  }
+
+  #blog.blog-scroll-ready .blog-scroll-item{
+    backface-visibility:hidden;
+    will-change:opacity,transform,clip-path;
+  }
+
+
+  /* ==========================================================
+     BLOG HERO
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-blog-hero{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  #blog.blog-scroll-ready .pdf-blog-hero > div{
+    position:relative;
+    z-index:2;
+  }
+
+  #blog.blog-scroll-ready .pdf-blog-hero .kicker,
+  #blog.blog-scroll-ready .pdf-blog-hero h1,
+  #blog.blog-scroll-ready .pdf-blog-hero p{
+    transition:none !important;
+    filter:none !important;
+    backface-visibility:visible;
+  }
+
+  /*
+    Smooth radial atmosphere.
+    No filter blur is used, so there is no rectangular blur-box edge.
+  */
+  #blog.blog-scroll-ready .pdf-blog-hero::before{
+    content:"";
+    position:absolute;
+    z-index:0;
+    pointer-events:none;
+
+    width:min(980px,72vw);
+    height:min(900px,88vw);
+    right:-18vw;
+    top:-130px;
+
+    border-radius:50%;
+
+    opacity:var(--blog-hero-glow-opacity,.48);
+
+    transform:
+      translate3d(
+        0,
+        var(--blog-hero-glow-y,0px),
+        0
+      );
+
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(255,212,0,.14) 0%,
+        rgba(255,212,0,.085) 22%,
+        rgba(255,212,0,.040) 43%,
+        rgba(255,212,0,.012) 59%,
+        rgba(255,212,0,0) 76%
+      );
+
+    filter:none;
+    will-change:opacity,transform;
+  }
+
+
+  /* ==========================================================
+     STORY — ENTRANCE + TWO-WAY SCROLL EXIT
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-about-section{
+    position:relative;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-about-heading{
+    position:relative;
+    z-index:3;
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-grid{
+    position:relative;
+    isolation:isolate;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-photo{
+    overflow:hidden;
+    transition:none !important;
+    will-change:opacity,transform,clip-path;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-photo img{
+    height:calc(100% + 50px);
+    min-height:700px;
+    margin-top:-25px;
+    transform:
+      translate3d(0,var(--story-image-y,0px),0)
+      scale(1.015);
+    transform-origin:center;
+    transition:none !important;
+    will-change:transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-photo:hover img{
+    transform:
+      translate3d(0,var(--story-image-y,0px),0)
+      scale(1.015);
+  }
+
+  #blog.blog-scroll-ready .pdf-story-copy{
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-copy h3,
+  #blog.blog-scroll-ready .pdf-story-copy p,
+  #blog.blog-scroll-ready .pdf-story-index,
+  #blog.blog-scroll-ready .pdf-story-highlight{
+    filter:none !important;
+    transition:none !important;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-highlight{
+    position:relative;
+    overflow:hidden;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-highlight::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:3px;
+    background:var(--yellow);
+    transform:scaleY(var(--story-highlight-progress,0));
+    transform-origin:top;
+    transition:none;
+  }
+
+
+  /* ==========================================================
+     JOURNEY PHOTO ROW — ENTER + EXIT
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-journey-photo-row{
+    position:relative;
+    isolation:isolate;
+  }
+
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure{
+    transition:none !important;
+    will-change:opacity,transform,clip-path;
+    backface-visibility:hidden;
+  }
+
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure img{
+    transform:
+      translate3d(0,var(--journey-image-y,0px),0)
+      scale(1.025);
+    transition:none !important;
+    will-change:transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure:hover img{
+    transform:
+      translate3d(0,var(--journey-image-y,0px),0)
+      scale(1.025);
+  }
+
+
+  /* ==========================================================
+     COACH — ENTER + EXIT
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-coach-section{
+    position:relative;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-section .section-title{
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-grid{
+    position:relative;
+    isolation:isolate;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-photo{
+    overflow:hidden;
+    transition:none !important;
+    will-change:opacity,transform,clip-path;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-photo img{
+    height:calc(100% + 54px);
+    min-height:729px;
+    margin-top:-27px;
+    transform:
+      translate3d(0,var(--coach-image-y,0px),0)
+      scale(1.015);
+    transition:none !important;
+    will-change:transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-photo:hover img{
+    transform:
+      translate3d(0,var(--coach-image-y,0px),0)
+      scale(1.015);
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-copy{
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-coach-copy h3,
+  #blog.blog-scroll-ready .pdf-coach-copy p,
+  #blog.blog-scroll-ready .pdf-story-index,
+  #blog.blog-scroll-ready .pdf-qualification-title{
+    filter:none !important;
+    transition:none !important;
+  }
+
+  #blog.blog-scroll-ready .pdf-qualification-list{
+    position:relative;
+  }
+
+  #blog.blog-scroll-ready .pdf-qualification{
+    position:relative;
+    overflow:hidden;
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-qualification::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:1px;
+    background:linear-gradient(90deg,var(--yellow),rgba(255,212,0,.18));
+    transform:scaleX(var(--qualification-line-progress,0));
+    transform-origin:left center;
+    transition:none;
+  }
+
+
+  /* ==========================================================
+     ACHIEVEMENTS
+     No scroll-sync rules here.
+     The one-time entrance + hover rules above own this section.
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-achievements-section{
+    position:relative;
+  }
+
+
+  /* ==========================================================
+     LATEST MOMENTS — DEPTH / SCREEN-EMERGENCE REVEAL
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-moments-section{
+    position:relative;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-section .section-title{
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid{
+    perspective:1350px;
+    perspective-origin:50% 45%;
+    transform-style:preserve-3d;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid figure{
+    transform-origin:center center;
+    transform-style:preserve-3d;
+    transition:none !important;
+    will-change:opacity,transform;
+    backface-visibility:hidden;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid figure img{
+    transform:
+      translate3d(0,var(--moment-image-y,0px),0)
+      scale(1.025);
+    transition:none !important;
+    will-change:transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid figure:hover img{
+    transform:
+      translate3d(0,var(--moment-image-y,0px),0)
+      scale(1.025);
+  }
+
+
+  /* ==========================================================
+     FEATURED VIDEO — GENTLE ENTER + EXIT
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-video-section{
+    position:relative;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-featured-video{
+    transition:none !important;
+    will-change:opacity,transform,clip-path;
+    transform-origin:center center;
+  }
+
+  #blog.blog-scroll-ready .pdf-featured-video img{
+    transform:
+      translate3d(0,var(--featured-video-image-y,0px),0)
+      scale(1.025);
+    transition:none !important;
+    will-change:transform;
+  }
+
+  #blog.blog-scroll-ready .pdf-featured-caption,
+  #blog.blog-scroll-ready .pdf-play{
+    transition:none !important;
+    will-change:opacity;
+  }
+
+  #blog.blog-scroll-ready .pdf-video-card{
+    filter:none !important;
+    transition:
+      border-color .25s ease,
+      background .25s ease !important;
+    will-change:opacity,transform;
+  }
+
+
+  /* ==========================================================
+     TIMELINE
+     Automatic CSS animation above owns it.
+     No scroll-sync styles are applied here.
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-timeline-section{
+    position:relative;
+  }
+
+
+  /* ==========================================================
+     BLOG CTA — CLEAN CROSSFADE
+  ========================================================== */
+
+  #blog.blog-scroll-ready .pdf-blog-cta-wrap,
+  #blog.blog-scroll-ready .pdf-blog-cta{
+    transition:none !important;
+  }
+
+  #blog.blog-scroll-ready .pdf-blog-cta{
+    transform:none !important;
+    filter:none !important;
+    will-change:opacity;
+  }
+
+  #blog.blog-scroll-ready .pdf-blog-cta .kicker,
+  #blog.blog-scroll-ready .pdf-blog-cta h2,
+  #blog.blog-scroll-ready .pdf-blog-cta .button{
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+  }
+
+}
+
+
+/* ============================================================
+   APPOINTMENT — FORM-SAFE SCROLL SYSTEM
+============================================================ */
+
+@media (min-width:1051px){
+
+  .appointment-motion-page.appointment-scroll-ready{
+    position:relative;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-scroll-item,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-scroll-item.reveal,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-scroll-item.reveal.visible{
+    transition:none !important;
+  }
+
+
+  /* ----------------------------------------------------------
+     APPOINTMENT HERO
+  ---------------------------------------------------------- */
+
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero > div{
+    position:relative;
+    z-index:2;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero .kicker,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero .eyebrow,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero h1,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero p{
+    filter:none !important;
+    transition:none !important;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero::before{
+    content:"";
+    position:absolute;
+    right:-14vw;
+    top:-100px;
+    width:min(900px,68vw);
+    height:min(850px,74vw);
+    z-index:0;
+    pointer-events:none;
+    border-radius:50%;
+    opacity:var(--appointment-hero-glow-opacity,.48);
+    transform:translate3d(0,var(--appointment-hero-glow-y,0px),0);
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(255,212,0,.13) 0%,
+        rgba(255,212,0,.06) 34%,
+        rgba(255,212,0,.018) 55%,
+        transparent 76%
+      );
+    filter:none;
+    will-change:opacity,transform;
+  }
+
+
+  /* ----------------------------------------------------------
+     BOOKING PANEL
+  ---------------------------------------------------------- */
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking{
+    position:relative;
+    overflow:visible;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-panel{
+    position:relative;
+    overflow:hidden;
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+    will-change:opacity,clip-path,border-color;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-panel::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:1px;
+    z-index:4;
+    background:linear-gradient(90deg,transparent,var(--yellow),transparent);
+    transform:scaleX(var(--booking-panel-line-progress,0));
+    transform-origin:center;
+    opacity:.8;
+    transition:none;
+    pointer-events:none;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  #formContent{
+    position:relative;
+    z-index:2;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync{
+    filter:none !important;
+    transition:none !important;
+    will-change:opacity,transform,clip-path;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync input,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync select,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync textarea,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync label{
+    filter:none !important;
+  }
+
+  .appointment-motion-page.appointment-form-engaged
+  .appointment-field-sync{
+    opacity:1 !important;
+    transform:none !important;
+    clip-path:none !important;
+    pointer-events:auto !important;
+  }
+
+  .appointment-motion-page.appointment-form-engaged
+  .booking-panel{
+    opacity:1 !important;
+    clip-path:none !important;
+  }
+
+
+  /* ----------------------------------------------------------
+     BOOKING SIDE
+  ---------------------------------------------------------- */
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side{
+    transform:translate3d(0,var(--booking-side-y,0px),0);
+    transition:none !important;
+    will-change:transform,opacity;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side img{
+    height:350px;
+    margin-top:-10px;
+    margin-bottom:-10px;
+    transform:
+      translate3d(0,var(--booking-side-image-y,0px),0)
+      scale(1.015);
+    transform-origin:center;
+    transition:none !important;
+    will-change:transform;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .info-card{
+    transform:none !important;
+    filter:none !important;
+    transition:none !important;
+    will-change:opacity;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .info-row{
+    transition:none !important;
+    will-change:opacity;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .submit,
+  .appointment-motion-page.appointment-scroll-ready
+  .form-note{
+    filter:none !important;
+  }
+
+  .appointment-motion-page .success,
+  .appointment-motion-page .success.show{
+    transform:none;
+    filter:none;
+  }
+
+}
+
+
+/* ============================================================
+   TABLET / MOBILE FALLBACK
+============================================================ */
+
+@media(max-width:1050px){
+
+  #blog.blog-scroll-ready .blog-scroll-item,
+  #blog.blog-scroll-ready .pdf-blog-hero .kicker,
+  #blog.blog-scroll-ready .pdf-blog-hero h1,
+  #blog.blog-scroll-ready .pdf-blog-hero p,
+  #blog.blog-scroll-ready .pdf-about-heading,
+  #blog.blog-scroll-ready .pdf-story-photo,
+  #blog.blog-scroll-ready .pdf-story-copy,
+  #blog.blog-scroll-ready .pdf-story-highlight,
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure,
+  #blog.blog-scroll-ready .pdf-coach-section .section-title,
+  #blog.blog-scroll-ready .pdf-coach-photo,
+  #blog.blog-scroll-ready .pdf-coach-copy,
+  #blog.blog-scroll-ready .pdf-qualification,
+  #blog.blog-scroll-ready .pdf-moments-section .section-title,
+  #blog.blog-scroll-ready .pdf-moments-grid figure,
+  #blog.blog-scroll-ready .pdf-featured-video,
+  #blog.blog-scroll-ready .pdf-video-card,
+  #blog.blog-scroll-ready .pdf-blog-cta{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    clip-path:none !important;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-photo img,
+  #blog.blog-scroll-ready .pdf-coach-photo img,
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure img,
+  #blog.blog-scroll-ready .pdf-moments-grid figure img,
+  #blog.blog-scroll-ready .pdf-featured-video img{
+    margin-top:0 !important;
+    height:100% !important;
+    min-height:0 !important;
+    transform:none !important;
+  }
+
+  /* Achievement entrance remains simple and works on smaller screens. */
+  #blog .pdf-achievements-section.achievement-enter-ready
+  .pdf-achievement-card.achievement-entered:hover{
+    transform:translate3d(0,-5px,0) scale(1.01) !important;
+  }
+
+  /* Automatic timeline becomes vertical on the mobile/tablet layout. */
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline{
+    border-top:0;
+    border-left-color:transparent;
+  }
+
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::before,
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+    left:0;
+    right:auto;
+    top:0;
+    bottom:0;
+    width:1px;
+    height:100%;
+  }
+
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+    transform:scaleY(0);
+    transform-origin:top center;
+  }
+
+  #blog .pdf-timeline-section.timeline-auto-active .pdf-timeline::after{
+    transform:scaleY(1);
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero .kicker,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero .eyebrow,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero h1,
+  .appointment-motion-page.appointment-scroll-ready
+  .inner-hero p,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-panel,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side,
+  .appointment-motion-page.appointment-scroll-ready
+  .info-card,
+  .appointment-motion-page.appointment-scroll-ready
+  .info-row{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    clip-path:none !important;
+  }
+
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side img{
+    height:330px;
+    margin-top:0;
+    margin-bottom:0;
+    transform:none !important;
+  }
+
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #blog.blog-scroll-ready *,
+  .appointment-motion-page.appointment-scroll-ready *{
+    animation:none !important;
+  }
+
+  #blog.blog-scroll-ready .blog-scroll-item,
+  #blog.blog-scroll-ready .pdf-blog-hero .kicker,
+  #blog.blog-scroll-ready .pdf-blog-hero h1,
+  #blog.blog-scroll-ready .pdf-blog-hero p,
+  #blog.blog-scroll-ready .pdf-about-heading,
+  #blog.blog-scroll-ready .pdf-story-photo,
+  #blog.blog-scroll-ready .pdf-story-copy,
+  #blog.blog-scroll-ready .pdf-story-highlight,
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure,
+  #blog.blog-scroll-ready .pdf-coach-section .section-title,
+  #blog.blog-scroll-ready .pdf-coach-photo,
+  #blog.blog-scroll-ready .pdf-coach-copy,
+  #blog.blog-scroll-ready .pdf-qualification,
+  #blog.blog-scroll-ready .pdf-moments-section .section-title,
+  #blog.blog-scroll-ready .pdf-moments-grid figure,
+  #blog.blog-scroll-ready .pdf-featured-video,
+  #blog.blog-scroll-ready .pdf-video-card,
+  #blog.blog-scroll-ready .pdf-blog-cta,
+  #blog .achievement-enter-item,
+  #blog .timeline-heading-auto,
+  #blog .pdf-timeline article,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-scroll-item,
+  .appointment-motion-page.appointment-scroll-ready
+  .appointment-field-sync,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-panel,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side,
+  .appointment-motion-page.appointment-scroll-ready
+  .info-card,
+  .appointment-motion-page.appointment-scroll-ready
+  .info-row{
+    opacity:1 !important;
+    transform:none !important;
+    filter:none !important;
+    clip-path:none !important;
+    transition:none !important;
+  }
+
+  #blog.blog-scroll-ready .pdf-story-photo img,
+  #blog.blog-scroll-ready .pdf-coach-photo img,
+  #blog.blog-scroll-ready .pdf-journey-photo-row figure img,
+  #blog.blog-scroll-ready .pdf-moments-grid figure img,
+  #blog.blog-scroll-ready .pdf-featured-video img,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-side img{
+    margin-top:0 !important;
+    margin-bottom:0 !important;
+    height:100% !important;
+    min-height:0 !important;
+    transform:none !important;
+    transition:none !important;
+  }
+
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+    transform:none !important;
+    transition:none !important;
+  }
+
+  #blog .pdf-qualification::after,
+  #blog .pdf-story-highlight::after,
+  .appointment-motion-page.appointment-scroll-ready
+  .booking-panel::before{
+    transform:none !important;
+  }
+
+}
+/* ============================================================
+   BLOG / ABOUT — FINAL CENTRE-DEPTH REFINEMENT
+   Latest Moments + Featured Video + Auto Timeline
+   Added 2026-08-17
+============================================================ */
+
+@media (min-width:1051px){
+
+  /* ----------------------------------------------------------
+     LATEST MOMENTS
+     Give the JS a deeper camera so photos can originate from the
+     visible centre of the user's screen and travel into the grid.
+  ---------------------------------------------------------- */
+
+  #blog.blog-scroll-ready .pdf-moments-section{
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid{
+    position:relative;
+    perspective:1700px !important;
+    perspective-origin:50% 50% !important;
+    transform-style:preserve-3d;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-moments-grid figure{
+    transform-style:preserve-3d;
+    transform-origin:center center;
+    backface-visibility:hidden;
+    transition:none !important;
+    will-change:opacity,transform;
+  }
+
+
+  /* ----------------------------------------------------------
+     FEATURED VIDEO
+     Same centre/depth language as Latest Moments, but gentler.
+  ---------------------------------------------------------- */
+
+  #blog.blog-scroll-ready .pdf-video-section{
+    perspective:1650px;
+    perspective-origin:50% 50%;
+    transform-style:preserve-3d;
+    overflow:visible;
+  }
+
+  #blog.blog-scroll-ready .pdf-featured-video,
+  #blog.blog-scroll-ready .pdf-video-card{
+    transform-style:preserve-3d;
+    backface-visibility:hidden;
+    will-change:opacity,transform;
+  }
+
+}
+
+
+/* ============================================================
+   TIMELINE — LINE REACHES EACH MILESTONE BEFORE CONTENT APPEARS
+============================================================ */
+
+/*
+  The track now moves at a constant speed so the JS delay values can
+  match the visual position of the yellow line exactly.
+*/
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+  transition:transform 3.2s linear !important;
+}
+
+/* Future milestones are completely hidden, not dimmed. */
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline article{
+  opacity:0 !important;
+  transform:translate3d(0,12px,0);
+  visibility:visible;
+  transition:
+    opacity .42s cubic-bezier(.22,1,.36,1),
+    transform .52s cubic-bezier(.22,1,.36,1) !important;
+  transition-delay:var(--timeline-delay,0ms) !important;
+}
+
+/*
+  Once the automatic timeline begins, each article still waits for its
+  own delay. That delay is set in main.js to the exact time the line
+  reaches that milestone.
+*/
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline article{
+  opacity:1 !important;
+  transform:translate3d(0,0,0);
+}
+
+/* Dot and year remain in their inactive styling while hidden. */
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline-dot{
+  background:rgba(255,255,255,.16);
+  box-shadow:none;
+  transform:scale(.72);
+  transition:
+    transform .30s cubic-bezier(.22,1,.36,1),
+    background .28s ease,
+    box-shadow .28s ease !important;
+  transition-delay:var(--timeline-delay,0ms) !important;
+}
+
+#blog .pdf-timeline-section.timeline-auto-active .pdf-timeline-dot{
+  background:var(--yellow);
+  box-shadow:0 0 18px rgba(255,212,0,.85);
+  transform:scale(1);
+}
+
+#blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline time{
+  color:var(--yellow);
+}
+
+/* Keep the title visible while the line/milestones perform below it. */
+#blog .pdf-timeline-section.timeline-auto-active
+.section-title.timeline-heading-auto{
+  opacity:1;
+  transform:none;
+}
+
+
+/* ============================================================
+   REDUCED MOTION — SHOW FINAL STATE IMMEDIATELY
+============================================================ */
+
+@media(prefers-reduced-motion:reduce){
+
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline article{
+    opacity:1 !important;
+    transform:none !important;
+    transition:none !important;
+  }
+
+  #blog .pdf-timeline-section.timeline-auto-ready .pdf-timeline::after{
+    transform:none !important;
+    transition:none !important;
+  }
+
+}
+
+/* ============================================================
+   GLOBAL CALISLANKA — INTERACTIVE CIRCULAR LINE BACKGROUND
+   ------------------------------------------------------------
+   - circle / ring outlines only
+   - no amoeba shapes
+   - no filled blobs
+   - stronger cursor movement
+   - subtle idle drift
+   - fixed across Home / About / Appointment
+============================================================ */
+
+:root{
+  --circle-field-x:0px;
+  --circle-field-y:0px;
+}
+
+body{
+  position:relative;
+  isolation:isolate;
+}
+
+/* Let the fixed ring field remain visible behind the page content. */
+#home,
+#blog,
+.appointment-motion-page{
+  background-color:transparent !important;
+}
+
+.page{
+  position:relative;
+  z-index:2;
+}
+
+.calis-circle-bg{
+  position:fixed;
+  inset:-12vh -10vw;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  user-select:none;
+  isolation:isolate;
+
+  transform:
+    translate3d(
+      var(--circle-field-x,0px),
+      var(--circle-field-y,0px),
+      0
+    );
+
+  will-change:transform;
+}
+
+.calis-circle-ring{
+  position:absolute;
+  left:var(--ring-left,50%);
+  top:var(--ring-top,50%);
+
+  width:var(--ring-size,260px);
+  height:var(--ring-size,260px);
+
+  margin-left:calc(var(--ring-size,260px) / -2);
+  margin-top:calc(var(--ring-size,260px) / -2);
+
+  border:
+    var(--ring-width,1px)
+    solid
+    rgba(255,255,255,var(--ring-alpha,.050));
+
+  border-radius:50%;
+  background:transparent;
+  box-shadow:none;
+  pointer-events:none;
+
+  opacity:var(--ring-opacity,1);
+
+  transform:
+    translate3d(
+      var(--ring-x,0px),
+      var(--ring-y,0px),
+      0
+    )
+    scaleX(var(--ring-scale-x,1))
+    scaleY(var(--ring-scale-y,1));
+
+  transform-origin:center;
+
+  will-change:
+    transform,
+    opacity;
+
+  animation:
+    calisCircleIdle
+    var(--ring-duration,18s)
+    ease-in-out
+    var(--ring-delay,0s)
+    infinite
+    alternate;
+}
+
+.calis-circle-ring.is-accent{
+  border-color:
+    rgba(255,212,0,var(--ring-alpha,.034));
+}
+
+@keyframes calisCircleIdle{
+  0%{
+    margin-left:
+      calc(
+        var(--ring-size,260px) / -2
+        - 5px
+      );
+
+    margin-top:
+      calc(
+        var(--ring-size,260px) / -2
+        + 3px
+      );
+  }
+
+  50%{
+    margin-left:
+      calc(
+        var(--ring-size,260px) / -2
+        + 7px
+      );
+
+    margin-top:
+      calc(
+        var(--ring-size,260px) / -2
+        - 6px
+      );
+  }
+
+  100%{
+    margin-left:
+      calc(
+        var(--ring-size,260px) / -2
+        - 2px
+      );
+
+    margin-top:
+      calc(
+        var(--ring-size,260px) / -2
+        + 8px
+      );
+  }
+}
+
+/* Keep major solid sections intentionally solid. */
+.pdf-members-section{
+  background:#171717;
+}
+
+.pdf-footer{
+  background:#101010;
+}
+
+footer:not(.pdf-footer){
+  background:#070707;
+}
+
+@media(max-width:1050px){
+  .calis-circle-bg{
+    inset:-10vh -18vw;
+  }
+
+  .calis-circle-ring{
+    opacity:.78;
+  }
+}
+
+@media(max-width:760px){
+  .calis-circle-bg{
+    inset:-8vh -35vw;
+  }
+
+  .calis-circle-ring{
+    opacity:.58;
+  }
+
+  .calis-circle-ring:nth-child(n+9){
+    display:none;
+  }
+}
+
+@media(any-hover:none){
+  .calis-circle-ring{
+    opacity:.52;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .calis-circle-bg{
+    transform:none !important;
+  }
+
+  .calis-circle-ring{
+    animation:none !important;
+    transform:none !important;
+    transition:none !important;
+  }
+}
+/* ============================================================
+   CALISLANKA — CIRCULAR LINE VISIBILITY UPDATE
+   PASTE THIS AT THE VERY BOTTOM OF style.css
+============================================================ */
+
+.calis-circle-ring{
+  border:
+    1.15px
+    solid
+    rgba(
+      255,
+      255,
+      255,
+      var(--ring-alpha,.080)
+    ) !important;
+}
+
+
+/* Slight yellow accents */
+
+.calis-circle-ring.is-accent{
+  border-color:
+    rgba(
+      255,
+      212,
+      0,
+      var(--ring-alpha,.070)
+    ) !important;
+}
+
+
+/* Keep desktop rings clearly visible */
+
+@media (min-width:1051px){
+
+  .calis-circle-ring{
+    opacity:1;
+  }
+
+}
+
+
+/* Tablet */
+
+@media (max-width:1050px){
+
+  .calis-circle-ring{
+    opacity:.88;
   }
 
 }
@@ -2887,38 +5881,21 @@ body.studio-popup-open{
 
 /* Mobile */
 
-@media(max-width:760px){
+@media (max-width:760px){
 
-  .studio-popup-overlay{
-    padding:18px;
+  .calis-circle-ring{
+    opacity:.70;
   }
 
-  .studio-popup{
-    width:94vw;
-    padding:58px 15px 72px;
-  }
+}
 
-  .studio-popup-image-wrap img{
-    max-height:65vh;
-  }
 
-  .studio-popup-arrow{
-    top:auto;
-    bottom:14px;
+/* Touch devices */
 
-    transform:none;
-  }
+@media (any-hover:none){
 
-  .studio-popup-prev{
-    left:18px;
-  }
-
-  .studio-popup-next{
-    right:18px;
-  }
-
-  .studio-popup-counter{
-    bottom:26px;
+  .calis-circle-ring{
+    opacity:.65;
   }
 
 }

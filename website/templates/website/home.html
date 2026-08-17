@@ -4,402 +4,861 @@
 {% block meta_description %}CalisLanka — Sri Lanka's first dedicated calisthenics studio.{% endblock %}
 
 {% block content %}
-<!-- HOME PAGE -->
-    <div class="page active" id="home">
 
-      <!-- HERO -->
-      <section class="hero pdf-home-hero shell">
-        <div class="hero-copy pdf-hero-copy">
-          <div class="eyebrow">🏆 Sri Lanka's First Calisthenics Studio</div>
+<!-- =========================================================
+     HOME PAGE
+========================================================= -->
 
-          <h1>
-            <span>Train</span>
-            <span>Beyond</span>
-            <span class="yellow">Limits.</span>
-          </h1>
+<div class="page active" id="home">
 
-          <p>
-            Transform your body through calisthenics, expert coaching,
-            strength and conditioning, and nutrition guidance designed
-            for every fitness level.
-          </p>
 
-          <div class="btn-row">
-            <a href="{% url 'website:appointment' %}" class="button">
-              Book Appointment →
-            </a>
-            <a href="#programs" class="button secondary">
-              Explore Programs
-            </a>
-          </div>
-        </div>
+  <!-- =======================================================
+       HERO
+  ======================================================== -->
 
-        <div class="hero-visual pdf-hero-visual">
-          <div class="pdf-hero-glow"></div>
+  <section class="hero pdf-home-hero shell">
 
-          <div class="pdf-hero-image">
-            <img
-              src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=1400&q=90"
-              alt="CalisLanka athlete"
-            >
-          </div>
+    <div class="hero-copy pdf-hero-copy">
 
-          <div class="pdf-floating-card pdf-rating-card">
-            <strong>4.8</strong>
-            <span>MEMBER RATING</span>
-          </div>
-
-          <div class="pdf-floating-card pdf-years-card">
-            <strong>8+</strong>
-            <span>YEARS COACHING</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- MOTION STRIP -->
-      <div class="marquee pdf-marquee">
-        <div>
-          STRENGTH ✦ MOBILITY ✦ CONTROL ✦ CONFIDENCE ✦ COMMUNITY ✦
-          STRENGTH ✦ MOBILITY ✦ CONTROL ✦ CONFIDENCE ✦ COMMUNITY ✦
-        </div>
+      <div class="eyebrow">
+        🏆 Sri Lanka's First Calisthenics Studio
       </div>
 
-      <!-- INSIDE THE STUDIO — 7 PHOTO GALLERY -->
-      <section class="content shell pdf-studio-section pdf-studio-seven">
-        <div class="section-title reveal">
-          <span class="kicker">INSIDE THE STUDIO</span>
-          <h2>Movement in every frame.</h2>
-        </div>
+      <h1>
+        <span>Train</span>
+        <span>Beyond</span>
+        <span class="yellow">Limits.</span>
+      </h1>
 
-        <!--
-          PHOTO REPLACEMENT:
-          Replace each image URL below with your real CalisLanka photo later.
-          There are 7 dedicated image positions.
-        -->
-        <div class="studio-seven-grid">
+      <p>
+        Transform your body through calisthenics, expert coaching,
+        strength and conditioning, and nutrition guidance designed
+        for every fitness level.
+      </p>
 
-          <figure class="studio-photo studio-photo-1 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 1"
-            >
-            <span class="studio-photo-label">PHOTO 01</span>
-          </figure>
+      <div class="btn-row">
 
-          <figure class="studio-photo studio-photo-2 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 2"
-            >
-            <span class="studio-photo-label">PHOTO 02</span>
-          </figure>
-
-          <figure class="studio-photo studio-photo-3 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 3"
-            >
-            <span class="studio-photo-label">PHOTO 03</span>
-          </figure>
-
-          <figure class="studio-photo studio-photo-4 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 4"
-            >
-            <span class="studio-photo-label">PHOTO 04</span>
-          </figure>
-
-          <figure class="studio-photo studio-photo-5 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1596357395217-80de13130e92?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 5"
-            >
-            <span class="studio-photo-label">PHOTO 05</span>
-          </figure>
-
-          <figure class="studio-photo studio-photo-6 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1549476464-37392f717541?auto=format&fit=crop&w=1200&q=88"
-              alt="CalisLanka photo 6"
-            >
-            <span class="studio-photo-label">PHOTO 06</span>
-          </figure>
-
-          <figure class="studio-photo studio-photo-7 reveal">
-            <img
-              src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=88"
-              alt="CalisLanka photo 7"
-            >
-            <span class="studio-photo-label">PHOTO 07</span>
-          </figure>
-
-        </div>
-      </section>
-
-      <!-- STUDIO PHOTO POPUP -->
-      <div
-        class="studio-popup-overlay"
-        id="studioPopup"
-        hidden
-        aria-hidden="true"
-      >
-        <div
-          class="studio-popup"
-          role="dialog"
-          aria-modal="true"
-          aria-label="CalisLanka studio gallery"
+        <a
+          href="{% url 'website:appointment' %}"
+          class="button"
         >
-          <button
-            class="studio-popup-close"
-            id="studioPopupClose"
-            type="button"
-            aria-label="Close gallery"
-          >
-            ×
-          </button>
+          Book Appointment →
+        </a>
 
-          <button
-            class="studio-popup-arrow studio-popup-prev"
-            id="studioPopupPrev"
-            type="button"
-            aria-label="Previous photo"
-          >
-            ‹
-          </button>
+        <a
+          href="#programs"
+          class="button secondary"
+        >
+          Explore Programs
+        </a>
 
-          <div class="studio-popup-image-wrap">
-            <img
-              id="studioPopupImage"
-              src=""
-              alt="CalisLanka studio photo"
-            >
-
-            <div
-              class="studio-popup-counter"
-              id="studioPopupCounter"
-            ></div>
-          </div>
-
-          <button
-            class="studio-popup-arrow studio-popup-next"
-            id="studioPopupNext"
-            type="button"
-            aria-label="Next photo"
-          >
-            ›
-          </button>
-        </div>
       </div>
-
-      <!-- WHY CALISLANKA -->
-      <section class="content shell pdf-why-section">
-        <div class="pdf-why-copy reveal">
-          <span class="kicker">WHY CALISLANKA</span>
-
-          <h2>
-            More than a<br>
-            workout.<br>
-            <span class="yellow">A stronger way<br>to move.</span>
-          </h2>
-
-          <p>
-            Every session combines coaching, structure and community to
-            help you build lasting ability - not temporary motivation.
-          </p>
-        </div>
-
-        <div class="pdf-feature-grid">
-          <article class="pdf-feature-card reveal">
-            <div class="pdf-feature-icon">✓</div>
-            <h3>Professional Coaching</h3>
-            <p>Clear technique, safe progressions and focused feedback.</p>
-          </article>
-
-          <article class="pdf-feature-card reveal">
-            <div class="pdf-feature-icon">⚡</div>
-            <h3>Science Based Training</h3>
-            <p>Programming designed around progressive overload and movement quality.</p>
-          </article>
-
-          <article class="pdf-feature-card reveal">
-            <div class="pdf-feature-icon">↗</div>
-            <h3>Measurable Progress</h3>
-            <p>Track strength, mobility, skills and consistency over time.</p>
-          </article>
-
-          <article class="pdf-feature-card reveal">
-            <div class="pdf-feature-icon">♥</div>
-            <h3>Supportive Community</h3>
-            <p>Train in an environment that welcomes every experience level.</p>
-          </article>
-        </div>
-      </section>
-
-      <!-- PROGRAMS -->
-      <section class="content shell pdf-programs-section" id="programs">
-        <div class="section-title split pdf-programs-heading reveal">
-          <div>
-            <span class="kicker">OUR PROGRAMS</span>
-            <h2>Built for every level.</h2>
-          </div>
-          <p>
-            Start from zero, sharpen your skills or take your performance
-            further through coaching that meets you where you are.
-          </p>
-        </div>
-
-        <div class="pdf-program-list">
-
-          <article class="pdf-program-card reveal">
-            <div class="pdf-program-image">
-              <img
-                src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1000&q=88"
-                alt="Personal Training"
-              >
-            </div>
-
-            <div class="pdf-program-info">
-              <span class="pdf-program-number">01</span>
-              <h3>Personal Training</h3>
-              <p>
-                One-to-one coaching in the studio. Every session is programmed,
-                filmed and reviewed so your technique compounds week after week.
-              </p>
-              <a href="{% url 'website:appointment' %}">Start this program ↗</a>
-            </div>
-          </article>
-
-          <article class="pdf-program-card reveal">
-            <div class="pdf-program-image">
-              <img
-                src="https://images.unsplash.com/photo-1571019613914-85f342c6a11e?auto=format&fit=crop&w=1000&q=88"
-                alt="Online Coaching"
-              >
-            </div>
-
-            <div class="pdf-program-info">
-              <span class="pdf-program-number">02</span>
-              <h3>Online Coaching</h3>
-              <p>
-                Train anywhere in the world with structured weekly programming,
-                video form checks and direct access to your coach.
-              </p>
-              <a href="{% url 'website:appointment' %}">Start this program ↗</a>
-            </div>
-          </article>
-
-          <article class="pdf-program-card reveal">
-            <div class="pdf-program-image">
-              <img
-                src="https://images.unsplash.com/photo-1596357395217-80de13130e92?auto=format&fit=crop&w=1000&q=88"
-                alt="Strength and Conditioning"
-              >
-            </div>
-
-            <div class="pdf-program-info">
-              <span class="pdf-program-number">03</span>
-              <h3>Strength & Conditioning</h3>
-              <p>
-                Build raw pulling and pressing power, explosive capacity and joint
-                resilience with hybrid bodyweight and load work.
-              </p>
-              <a href="{% url 'website:appointment' %}">Start this program ↗</a>
-            </div>
-          </article>
-
-          <article class="pdf-program-card reveal">
-            <div class="pdf-program-image">
-              <img
-                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=88"
-                alt="Nutrition Plans"
-              >
-            </div>
-
-            <div class="pdf-program-info">
-              <span class="pdf-program-number">04</span>
-              <h3>Nutrition Plans</h3>
-              <p>
-                Body composition guidance with practical local meals, macro targets
-                and habit coaching that survives real life.
-              </p>
-              <a href="{% url 'website:appointment' %}">Start this program ↗</a>
-            </div>
-          </article>
-
-        </div>
-      </section>
-
-      <!-- STATS -->
-      <section class="pdf-stats shell reveal">
-        <div class="pdf-stat">
-          <strong>250+</strong>
-          <span>ACTIVE MEMBERS</span>
-        </div>
-
-        <div class="pdf-stat">
-          <strong>20+</strong>
-          <span>TRAINING PROGRAMS</span>
-        </div>
-
-        <div class="pdf-stat">
-          <strong>98%</strong>
-          <span>MEMBER SATISFACTION</span>
-        </div>
-
-        <div class="pdf-stat">
-          <strong>8+</strong>
-          <span>YEARS EXPERIENCE</span>
-        </div>
-      </section>
-
-      <!-- MEMBERS -->
-      <section class="pdf-members-section">
-        <div class="shell">
-          <div class="section-title pdf-members-title reveal">
-            <span class="kicker">MEMBERS</span>
-            <h2>Trusted by athletes across<br>the island.</h2>
-          </div>
-
-          <article class="pdf-testimonial reveal">
-            <div class="pdf-quote">”</div>
-
-            <blockquote>
-              “As a complete beginner I never felt out of place.
-              Calm, precise, premium - exactly how training should feel.”
-            </blockquote>
-
-            <div class="pdf-member">
-              <div class="pdf-member-avatar">DP</div>
-              <div>
-                <strong>Dinuka Perera</strong>
-                <span>Member since 2023</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <!-- CTA -->
-      <section class="pdf-cta-wrap shell reveal">
-        <div class="pdf-cta-card">
-          <span class="kicker">YOUR NEXT REP STARTS HERE</span>
-
-          <h2>
-            Ready to transform<br>
-            the way you train?
-          </h2>
-
-          <p>
-            Book your first CalisLanka session and take the first step toward
-            stronger, more capable movement.
-          </p>
-
-          <a href="{% url 'website:appointment' %}" class="button">
-            Book Your Appointment →
-          </a>
-        </div>
-      </section>
 
     </div>
+
+
+    <div class="hero-visual pdf-hero-visual">
+
+      <div class="pdf-hero-glow"></div>
+
+      <div class="pdf-hero-image">
+
+        <img
+          src="https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=1400&q=90"
+          alt="CalisLanka athlete"
+        >
+
+      </div>
+
+
+      <div class="pdf-floating-card pdf-rating-card">
+        <strong>4.8</strong>
+        <span>MEMBER RATING</span>
+      </div>
+
+
+      <div class="pdf-floating-card pdf-years-card">
+        <strong>8+</strong>
+        <span>YEARS COACHING</span>
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =======================================================
+       MOTION STRIP / MARQUEE
+
+       IMPORTANT:
+       Keep only ONE source phrase here.
+
+       JavaScript will duplicate it internally to create
+       the continuous single-line left-to-right ribbon.
+  ======================================================== -->
+
+  <div
+    class="marquee pdf-marquee"
+    aria-label="Strength Mobility Control Confidence Community"
+  >
+
+    <div>
+      STRENGTH ✦ MOBILITY ✦ CONTROL ✦ CONFIDENCE ✦ COMMUNITY ✦
+    </div>
+
+  </div>
+
+
+
+  <!-- =======================================================
+       INSIDE THE STUDIO
+       APPLE-STYLE SCROLL CINEMATIC
+
+       IMPORTANT STRUCTURE:
+
+       pdf-studio-seven
+           ↓
+       studio-sticky-stage + shell
+           ↓
+       heading + gallery
+  ======================================================== -->
+
+  <section class="pdf-studio-section pdf-studio-seven">
+
+    <div class="content shell studio-sticky-stage">
+
+
+      <!-- STUDIO HEADING -->
+
+      <div class="section-title reveal">
+
+        <span class="kicker">
+          INSIDE THE STUDIO
+        </span>
+
+        <h2>
+          Movement in every frame.
+        </h2>
+
+      </div>
+
+
+
+      <!-- ===================================================
+           7 PHOTO GALLERY
+      ==================================================== -->
+
+      <div class="studio-seven-grid">
+
+
+        <!-- PHOTO 01 -->
+
+        <figure class="studio-photo studio-photo-1 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 1"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 01
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 02 -->
+
+        <figure class="studio-photo studio-photo-2 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 2"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 02
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 03 -->
+
+        <figure class="studio-photo studio-photo-3 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 3"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 03
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 04 -->
+
+        <figure class="studio-photo studio-photo-4 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 4"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 04
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 05 -->
+
+        <figure class="studio-photo studio-photo-5 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1596357395217-80de13130e92?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 5"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 05
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 06 -->
+
+        <figure class="studio-photo studio-photo-6 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1549476464-37392f717541?auto=format&fit=crop&w=1200&q=88"
+            alt="CalisLanka photo 6"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 06
+          </span>
+
+        </figure>
+
+
+
+        <!-- PHOTO 07 -->
+
+        <figure class="studio-photo studio-photo-7 reveal">
+
+          <img
+            src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=1600&q=88"
+            alt="CalisLanka photo 7"
+          >
+
+          <span class="studio-photo-label">
+            PHOTO 07
+          </span>
+
+        </figure>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =======================================================
+       STUDIO PHOTO POPUP
+  ======================================================== -->
+
+  <div
+    class="studio-popup-overlay"
+    id="studioPopup"
+    hidden
+    aria-hidden="true"
+  >
+
+    <div
+      class="studio-popup"
+      role="dialog"
+      aria-modal="true"
+      aria-label="CalisLanka studio gallery"
+    >
+
+
+      <!-- CLOSE -->
+
+      <button
+        class="studio-popup-close"
+        id="studioPopupClose"
+        type="button"
+        aria-label="Close gallery"
+      >
+        ×
+      </button>
+
+
+
+      <!-- PREVIOUS -->
+
+      <button
+        class="studio-popup-arrow studio-popup-prev"
+        id="studioPopupPrev"
+        type="button"
+        aria-label="Previous photo"
+      >
+        ‹
+      </button>
+
+
+
+      <!-- POPUP IMAGE -->
+
+      <div class="studio-popup-image-wrap">
+
+        <img
+          id="studioPopupImage"
+          src=""
+          alt="CalisLanka studio photo"
+        >
+
+        <div
+          class="studio-popup-counter"
+          id="studioPopupCounter"
+        ></div>
+
+      </div>
+
+
+
+      <!-- NEXT -->
+
+      <button
+        class="studio-popup-arrow studio-popup-next"
+        id="studioPopupNext"
+        type="button"
+        aria-label="Next photo"
+      >
+        ›
+      </button>
+
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =======================================================
+       WHY CALISLANKA
+  ======================================================== -->
+
+  <section class="content shell pdf-why-section">
+
+
+    <div class="pdf-why-copy reveal">
+
+      <span class="kicker">
+        WHY CALISLANKA
+      </span>
+
+      <h2>
+        More than a<br>
+        workout.<br>
+
+        <span class="yellow">
+          A stronger way<br>
+          to move.
+        </span>
+      </h2>
+
+      <p>
+        Every session combines coaching, structure and community to
+        help you build lasting ability - not temporary motivation.
+      </p>
+
+    </div>
+
+
+
+    <div class="pdf-feature-grid">
+
+
+      <!-- FEATURE 01 -->
+
+      <article class="pdf-feature-card reveal">
+
+        <div class="pdf-feature-icon">
+          ✓
+        </div>
+
+        <h3>
+          Professional Coaching
+        </h3>
+
+        <p>
+          Clear technique, safe progressions and focused feedback.
+        </p>
+
+      </article>
+
+
+
+      <!-- FEATURE 02 -->
+
+      <article class="pdf-feature-card reveal">
+
+        <div class="pdf-feature-icon">
+          ⚡
+        </div>
+
+        <h3>
+          Science Based Training
+        </h3>
+
+        <p>
+          Programming designed around progressive overload and
+          movement quality.
+        </p>
+
+      </article>
+
+
+
+      <!-- FEATURE 03 -->
+
+      <article class="pdf-feature-card reveal">
+
+        <div class="pdf-feature-icon">
+          ↗
+        </div>
+
+        <h3>
+          Measurable Progress
+        </h3>
+
+        <p>
+          Track strength, mobility, skills and consistency over time.
+        </p>
+
+      </article>
+
+
+
+      <!-- FEATURE 04 -->
+
+      <article class="pdf-feature-card reveal">
+
+        <div class="pdf-feature-icon">
+          ♥
+        </div>
+
+        <h3>
+          Supportive Community
+        </h3>
+
+        <p>
+          Train in an environment that welcomes every experience level.
+        </p>
+
+      </article>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =======================================================
+       PROGRAMS
+  ======================================================== -->
+
+  <section
+    class="content shell pdf-programs-section"
+    id="programs"
+  >
+
+
+    <div class="section-title split pdf-programs-heading reveal">
+
+      <div>
+
+        <span class="kicker">
+          OUR PROGRAMS
+        </span>
+
+        <h2>
+          Built for every level.
+        </h2>
+
+      </div>
+
+
+      <p>
+        Start from zero, sharpen your skills or take your performance
+        further through coaching that meets you where you are.
+      </p>
+
+    </div>
+
+
+
+    <div class="pdf-program-list">
+
+
+      <!-- ===================================================
+           PROGRAM 01
+      ==================================================== -->
+
+      <article class="pdf-program-card reveal">
+
+        <div class="pdf-program-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1000&q=88"
+            alt="Personal Training"
+          >
+
+        </div>
+
+
+        <div class="pdf-program-info">
+
+          <span class="pdf-program-number">
+            01
+          </span>
+
+          <h3>
+            Personal Training
+          </h3>
+
+          <p>
+            One-to-one coaching in the studio. Every session is programmed,
+            filmed and reviewed so your technique compounds week after week.
+          </p>
+
+          <a href="{% url 'website:appointment' %}">
+            Start this program ↗
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           PROGRAM 02
+      ==================================================== -->
+
+      <article class="pdf-program-card reveal">
+
+        <div class="pdf-program-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1571019613914-85f342c6a11e?auto=format&fit=crop&w=1000&q=88"
+            alt="Online Coaching"
+          >
+
+        </div>
+
+
+        <div class="pdf-program-info">
+
+          <span class="pdf-program-number">
+            02
+          </span>
+
+          <h3>
+            Online Coaching
+          </h3>
+
+          <p>
+            Train anywhere in the world with structured weekly programming,
+            video form checks and direct access to your coach.
+          </p>
+
+          <a href="{% url 'website:appointment' %}">
+            Start this program ↗
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           PROGRAM 03
+      ==================================================== -->
+
+      <article class="pdf-program-card reveal">
+
+        <div class="pdf-program-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1596357395217-80de13130e92?auto=format&fit=crop&w=1000&q=88"
+            alt="Strength and Conditioning"
+          >
+
+        </div>
+
+
+        <div class="pdf-program-info">
+
+          <span class="pdf-program-number">
+            03
+          </span>
+
+          <h3>
+            Strength & Conditioning
+          </h3>
+
+          <p>
+            Build raw pulling and pressing power, explosive capacity and
+            joint resilience with hybrid bodyweight and load work.
+          </p>
+
+          <a href="{% url 'website:appointment' %}">
+            Start this program ↗
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- ===================================================
+           PROGRAM 04
+      ==================================================== -->
+
+      <article class="pdf-program-card reveal">
+
+        <div class="pdf-program-image">
+
+          <img
+            src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1000&q=88"
+            alt="Nutrition Plans"
+          >
+
+        </div>
+
+
+        <div class="pdf-program-info">
+
+          <span class="pdf-program-number">
+            04
+          </span>
+
+          <h3>
+            Nutrition Plans
+          </h3>
+
+          <p>
+            Body composition guidance with practical local meals,
+            macro targets and habit coaching that survives real life.
+          </p>
+
+          <a href="{% url 'website:appointment' %}">
+            Start this program ↗
+          </a>
+
+        </div>
+
+      </article>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =======================================================
+       STATS
+  ======================================================== -->
+
+  <section class="pdf-stats shell reveal">
+
+
+    <div class="pdf-stat">
+
+      <strong>
+        250+
+      </strong>
+
+      <span>
+        ACTIVE MEMBERS
+      </span>
+
+    </div>
+
+
+    <div class="pdf-stat">
+
+      <strong>
+        20+
+      </strong>
+
+      <span>
+        TRAINING PROGRAMS
+      </span>
+
+    </div>
+
+
+    <div class="pdf-stat">
+
+      <strong>
+        98%
+      </strong>
+
+      <span>
+        MEMBER SATISFACTION
+      </span>
+
+    </div>
+
+
+    <div class="pdf-stat">
+
+      <strong>
+        8+
+      </strong>
+
+      <span>
+        YEARS EXPERIENCE
+      </span>
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- =======================================================
+       MEMBERS
+  ======================================================== -->
+
+  <section class="pdf-members-section">
+
+    <div class="shell">
+
+
+      <div class="section-title pdf-members-title reveal">
+
+        <span class="kicker">
+          MEMBERS
+        </span>
+
+        <h2>
+          Trusted by athletes across<br>
+          the island.
+        </h2>
+
+      </div>
+
+
+
+      <article class="pdf-testimonial reveal">
+
+
+        <div class="pdf-quote">
+          ”
+        </div>
+
+
+        <blockquote>
+          “As a complete beginner I never felt out of place.
+          Calm, precise, premium - exactly how training should feel.”
+        </blockquote>
+
+
+        <div class="pdf-member">
+
+
+          <div class="pdf-member-avatar">
+            DP
+          </div>
+
+
+          <div>
+
+            <strong>
+              Dinuka Perera
+            </strong>
+
+            <span>
+              Member since 2023
+            </span>
+
+          </div>
+
+
+        </div>
+
+      </article>
+
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =======================================================
+       CTA
+  ======================================================== -->
+
+  <section class="pdf-cta-wrap shell reveal">
+
+    <div class="pdf-cta-card">
+
+
+      <span class="kicker">
+        YOUR NEXT REP STARTS HERE
+      </span>
+
+
+      <h2>
+        Ready to transform<br>
+        the way you train?
+      </h2>
+
+
+      <p>
+        Book your first CalisLanka session and take the first step
+        toward stronger, more capable movement.
+      </p>
+
+
+      <a
+        href="{% url 'website:appointment' %}"
+        class="button"
+      >
+        Book Your Appointment →
+      </a>
+
+
+    </div>
+
+  </section>
+
+
+</div>
+
 {% endblock %}

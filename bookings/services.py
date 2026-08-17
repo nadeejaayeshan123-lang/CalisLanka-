@@ -12,6 +12,11 @@ logger = logging.getLogger(__name__)
 
 
 def create_whatsapp_number(phone):
+    """
+    Convert a Sri Lankan local phone number into
+    the international format required by WhatsApp.
+    """
+
     digits = re.sub(r"\D", "", phone)
 
     if digits.startswith("0"):
@@ -20,7 +25,11 @@ def create_whatsapp_number(phone):
     return digits
 
 
-def notify_admin_new_appointment(appointment):
+def send_appointment_notification(appointment):
+    """
+    Send a new appointment request notification
+    to the configured CalisLanka admin email.
+    """
 
     recipient = BookingSettings.get_notification_email()
 
@@ -43,94 +52,164 @@ def notify_admin_new_appointment(appointment):
         f"{appointment.full_name}"
     )
 
+    # --------------------------------------------------------
+    # PLAIN TEXT EMAIL
+    # --------------------------------------------------------
+
     text_message = f"""
 NEW CALISLANKA APPOINTMENT REQUEST
 
-Customer
---------
+CUSTOMER DETAILS
+------------------------------
 Name: {appointment.full_name}
 Phone: {appointment.phone}
 Email: {appointment.email}
 Age: {appointment.age or "Not provided"}
 
-Appointment Request
--------------------
+APPOINTMENT DETAILS
+------------------------------
 Program: {appointment.get_program_display()}
 Preferred Date: {appointment.preferred_date}
 Preferred Time: {appointment.get_preferred_time_display()}
-Experience: {appointment.get_experience_display()}
+Experience Level: {appointment.get_experience_display()}
 
-Message:
-{appointment.message or "No message provided"}
+CUSTOMER MESSAGE
+------------------------------
+{appointment.message or "No message provided."}
 
-Status: Pending
+REQUEST STATUS
+------------------------------
+Status: {appointment.get_status_display()}
 
-WhatsApp:
+WHATSAPP
+------------------------------
 {whatsapp_url}
+
+Please log in to the CalisLanka Admin Panel
+to review this appointment request.
 """
 
+    # --------------------------------------------------------
+    # HTML EMAIL
+    # --------------------------------------------------------
+
     html_message = f"""
-    <h2>New CalisLanka Appointment Request</h2>
+    <div style="
+        font-family: Arial, sans-serif;
+        max-width: 650px;
+        margin: auto;
+    ">
 
-    <h3>Customer</h3>
+        <h2>
+            New CalisLanka Appointment Request
+        </h2>
 
-    <p>
-        <strong>Name:</strong>
-        {escape(appointment.full_name)}
-    </p>
+        <hr>
 
-    <p>
-        <strong>Phone:</strong>
-        {escape(appointment.phone)}
-    </p>
+        <h3>Customer Details</h3>
 
-    <p>
-        <strong>Email:</strong>
-        {escape(appointment.email)}
-    </p>
+        <p>
+            <strong>Name:</strong>
+            {escape(appointment.full_name)}
+        </p>
 
-    <p>
-        <strong>Age:</strong>
-        {escape(str(appointment.age or "Not provided"))}
-    </p>
+        <p>
+            <strong>Phone:</strong>
+            {escape(appointment.phone)}
+        </p>
 
-    <h3>Appointment Request</h3>
+        <p>
+            <strong>Email:</strong>
+            {escape(appointment.email)}
+        </p>
 
-    <p>
-        <strong>Program:</strong>
-        {escape(appointment.get_program_display())}
-    </p>
+        <p>
+            <strong>Age:</strong>
+            {escape(str(
+                appointment.age
+                or "Not provided"
+            ))}
+        </p>
 
-    <p>
-        <strong>Preferred Date:</strong>
-        {escape(str(appointment.preferred_date))}
-    </p>
+        <hr>
 
-    <p>
-        <strong>Preferred Time:</strong>
-        {escape(appointment.get_preferred_time_display())}
-    </p>
+        <h3>Appointment Details</h3>
 
-    <p>
-        <strong>Experience:</strong>
-        {escape(appointment.get_experience_display())}
-    </p>
+        <p>
+            <strong>Program:</strong>
+            {escape(
+                appointment.get_program_display()
+            )}
+        </p>
 
-    <p>
-        <strong>Message:</strong><br>
-        {escape(appointment.message or "No message provided")}
-    </p>
+        <p>
+            <strong>Preferred Date:</strong>
+            {escape(
+                str(appointment.preferred_date)
+            )}
+        </p>
 
-    <p>
-        <strong>Status:</strong> Pending
-    </p>
+        <p>
+            <strong>Preferred Time:</strong>
+            {escape(
+                appointment.get_preferred_time_display()
+            )}
+        </p>
 
-    <p>
-        <a href="{whatsapp_url}">
-            Contact customer on WhatsApp
-        </a>
-    </p>
+        <p>
+            <strong>Experience Level:</strong>
+            {escape(
+                appointment.get_experience_display()
+            )}
+        </p>
+
+        <hr>
+
+        <h3>Customer Message</h3>
+
+        <p>
+            {escape(
+                appointment.message
+                or "No message provided."
+            )}
+        </p>
+
+        <hr>
+
+        <p>
+            <strong>Status:</strong>
+            {escape(
+                appointment.get_status_display()
+            )}
+        </p>
+
+        <p>
+            <a
+                href="{whatsapp_url}"
+                style="
+                    display: inline-block;
+                    padding: 10px 16px;
+                    background: #25D366;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                "
+            >
+                Contact Customer on WhatsApp
+            </a>
+        </p>
+
+        <p>
+            Log in to the CalisLanka Admin Panel
+            to manage this appointment request.
+        </p>
+
+    </div>
     """
+
+    # --------------------------------------------------------
+    # SEND EMAIL
+    # --------------------------------------------------------
 
     try:
 
@@ -140,13 +219,35 @@ WhatsApp:
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[recipient],
             html_message=html_message,
+            fail_silently=False,
         )
 
-        return sent == 1
+        if sent == 1:
+
+            appointment.email_notification_sent = True
+
+            appointment.save(
+                update_fields=[
+                    "email_notification_sent"
+                ]
+            )
+
+            logger.info(
+                "Appointment notification sent "
+                "successfully for appointment %s.",
+                appointment.pk,
+            )
+
+            return True
+
+        return False
 
     except Exception:
+
         logger.exception(
-            "Failed to send appointment notification email."
+            "Failed to send appointment notification email "
+            "for appointment %s.",
+            appointment.pk,
         )
 
         return False
