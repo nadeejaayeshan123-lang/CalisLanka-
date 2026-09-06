@@ -172,476 +172,526 @@ initCursorGlow
 } else {
 initCursorGlow();
 }
-function initCircularLineBackground() {
+function initParticleNetworkBackground() {
   document
-    .querySelector(".calis-circle-bg")
+    .querySelector("#calis-particle-canvas")
     ?.remove();
-  const layer =
-    document.createElement("div");
-  layer.className =
-    "calis-circle-bg";
-  layer.setAttribute(
+  document
+    .querySelectorAll(".calis-circle-bg, .calis-circle-ring")
+    .forEach(element => element.remove());
+
+  const canvas =
+    document.createElement("canvas");
+  canvas.id =
+    "calis-particle-canvas";
+  canvas.setAttribute(
     "aria-hidden",
     "true"
   );
-  const ringConfigs = [
-  { x: -4,  y: 12, size: 420, react: 1.00, dir:  1, alpha: .085 },
-  { x: 18,  y: 28, size: 190, react: 1.20, dir: -1, alpha: .095 },
-  { x: 42,  y: 10, size: 310, react: .90, dir:  1, alpha: .075 },
-  { x: 66,  y: 24, size: 150, react: 1.25, dir: -1, alpha: .095, accent: true },
-  { x: 91,  y:  8, size: 390, react: .85, dir:  1, alpha: .075 },
-  { x:  7,  y: 63, size: 230, react: 1.15, dir: -1, alpha: .090 },
-  { x: 31,  y: 78, size: 460, react: .78, dir:  1, alpha: .070 },
-  { x: 54,  y: 58, size: 175, react: 1.30, dir: -1, alpha: .095 },
-  { x: 77,  y: 72, size: 285, react: 1.00, dir:  1, alpha: .085, accent: true },
-  { x: 97,  y: 58, size: 205, react: 1.20, dir: -1, alpha: .085 },
-  { x: 49,  y: 96, size: 350, react: .82, dir:  1, alpha: .072 },
-  { x: 84,  y: 98, size: 520, react: .72, dir: -1, alpha: .065 }
-];
-  const rings =
-    ringConfigs.map(
-      (config, index) => {
-        const element =
-          document.createElement(
-            "span"
-          );
-        element.className =
-          "calis-circle-ring";
-        if (config.accent) {
-          element.classList.add(
-            "is-accent"
-          );
-        }
-        element.style.setProperty(
-          "--ring-left",
-          `${config.x}%`
-        );
-        element.style.setProperty(
-          "--ring-top",
-          `${config.y}%`
-        );
-        element.style.setProperty(
-          "--ring-size",
-          `${config.size}px`
-        );
-        element.style.setProperty(
-          "--ring-alpha",
-          config.alpha
-        );
-        element.style.setProperty(
-          "--ring-duration",
-          `${16 + (index % 5) * 3}s`
-        );
-        element.style.setProperty(
-          "--ring-delay",
-          `${-(index * 1.9)}s`
-        );
-        layer.appendChild(
-          element
-        );
-        return {
-          element,
-          config,
-          centerX: 0,
-          centerY: 0,
-          x: 0,
-          y: 0,
-          vx: 0,
-          vy: 0,
-          scaleX: 1,
-          scaleY: 1,
-          vScaleX: 0,
-          vScaleY: 0
-        };
-      }
-    );
-  document.body.insertBefore(
-    layer,
-    document.body.firstChild
-  );
-  if (
-    prefersReducedMotion ||
-    !window.matchMedia(
-      "(any-hover:hover) and (pointer:fine)"
-    ).matches
-  ) {
+  document.body.prepend(canvas);
+
+  const ctx =
+    canvas.getContext("2d", {
+      alpha: true,
+      desynchronized: true
+    });
+  if (!ctx) {
     return;
   }
-  let pointerX =
-    window.innerWidth * .5;
-  let pointerY =
-    window.innerHeight * .5;
-  let targetX = pointerX;
-  let targetY = pointerY;
-  let previousX = pointerX;
-  let previousY = pointerY;
-  let velocityX = 0;
-  let velocityY = 0;
-  let targetVelocityX = 0;
-  let targetVelocityY = 0;
-  let movementEnergy = 0;
-  let pointerActive = false;
-  function updateRingGeometry() {
-    const layerRect =
-      layer.getBoundingClientRect();
-    rings.forEach(
-      state => {
-        const rect =
-          state.element
-            .getBoundingClientRect();
-        state.centerX =
-          rect.left -
-          layerRect.left +
-          rect.width / 2;
-        state.centerY =
-          rect.top -
-          layerRect.top +
-          rect.height / 2;
+
+  const prefersReducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+  const touchQuery =
+    window.matchMedia(
+      "(any-hover: none)"
+    );
+  const finePointerQuery =
+    window.matchMedia(
+      "(pointer: fine)"
+    );
+
+  const pointer = {
+    x: -9999,
+    y: -9999,
+    active: false
+  };
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let particles = [];
+  let animationFrame = 0;
+  let running = true;
+  let lastTime = performance.now();
+
+  const clamp =
+    (value, min, max) =>
+      Math.max(
+        min,
+        Math.min(max, value)
+      );
+
+  const random =
+    (min, max) =>
+      min +
+      Math.random() *
+      (max - min);
+
+  function particleCount() {
+    const area =
+      Math.max(
+        1,
+        width * height
+      );
+    let count = touchQuery.matches
+      ? area / 15500
+      : area / 10500;
+    count = touchQuery.matches
+      ? clamp(count, 34, 82)
+      : clamp(count, 70, 175);
+    if (prefersReducedMotion.matches) {
+      count *= 0.78;
+    }
+    return Math.round(count);
+  }
+
+  function makeParticle() {
+    const accent =
+      Math.random() < 0.095;
+    return {
+      x: random(0, width),
+      y: random(0, height),
+      vx: random(-0.16, 0.16),
+      vy: random(-0.16, 0.16),
+      radius: accent
+        ? random(1.05, 1.75)
+        : random(0.65, 1.35),
+      alpha: accent
+        ? random(0.52, 0.9)
+        : random(0.28, 0.68),
+      accent,
+      phase: random(0, Math.PI * 2),
+      speed: random(0.65, 1.25)
+    };
+  }
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+    canvas.width =
+      Math.round(width * dpr);
+    canvas.height =
+      Math.round(height * dpr);
+    canvas.style.width =
+      `${width}px`;
+    canvas.style.height =
+      `${height}px`;
+    ctx.setTransform(
+      dpr,
+      0,
+      0,
+      dpr,
+      0,
+      0
+    );
+
+    const desired = particleCount();
+    if (particles.length > desired) {
+      particles.length = desired;
+    } else {
+      while (particles.length < desired) {
+        particles.push(
+          makeParticle()
+        );
+      }
+    }
+  }
+
+  function updatePointer(event) {
+    if (!finePointerQuery.matches) {
+      return;
+    }
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+    pointer.active = true;
+  }
+
+  function clearPointer() {
+    pointer.active = false;
+    pointer.x = -9999;
+    pointer.y = -9999;
+  }
+
+  function updateParticles(time) {
+    const delta =
+      Math.min(
+        32,
+        time - lastTime
+      ) / 16.6667;
+    lastTime = time;
+    const motion =
+      prefersReducedMotion.matches
+        ? 0.22
+        : 1;
+    const cursorRadius =
+      touchQuery.matches
+        ? 0
+        : 190;
+
+    particles.forEach(
+      particle => {
+        const wave =
+          Math.sin(
+            time * 0.00035 *
+              particle.speed +
+              particle.phase
+          );
+        const wave2 =
+          Math.cos(
+            time * 0.00027 *
+              particle.speed +
+              particle.phase * 0.7
+          );
+
+        particle.vx +=
+          wave * 0.0016 * motion;
+        particle.vy +=
+          wave2 * 0.0016 * motion;
+
+        particle.vx *= 0.995;
+        particle.vy *= 0.995;
+
+        if (
+          pointer.active &&
+          cursorRadius > 0
+        ) {
+          const dx =
+            particle.x - pointer.x;
+          const dy =
+            particle.y - pointer.y;
+          const distance =
+            Math.hypot(dx, dy);
+          if (
+            distance > 0 &&
+            distance < cursorRadius
+          ) {
+            const force =
+              (1 -
+                distance /
+                  cursorRadius) *
+              0.025;
+            particle.vx +=
+              (dx / distance) *
+              force;
+            particle.vy +=
+              (dy / distance) *
+              force;
+          }
+        }
+
+        const maxSpeed =
+          0.36 * motion +
+          0.05;
+        const speed =
+          Math.hypot(
+            particle.vx,
+            particle.vy
+          );
+        if (speed > maxSpeed) {
+          const scale =
+            maxSpeed / speed;
+          particle.vx *= scale;
+          particle.vy *= scale;
+        }
+
+        particle.x +=
+          particle.vx * delta;
+        particle.y +=
+          particle.vy * delta;
+
+        if (particle.x < -20) {
+          particle.x = width + 20;
+        } else if (
+          particle.x > width + 20
+        ) {
+          particle.x = -20;
+        }
+        if (particle.y < -20) {
+          particle.y = height + 20;
+        } else if (
+          particle.y > height + 20
+        ) {
+          particle.y = -20;
+        }
       }
     );
   }
-  updateRingGeometry();
+
+  function draw(time) {
+    ctx.clearRect(
+      0,
+      0,
+      width,
+      height
+    );
+
+    const connectionDistance =
+      touchQuery.matches
+        ? 112
+        : 148;
+    const connectionDistanceSq =
+      connectionDistance *
+      connectionDistance;
+
+    for (
+      let i = 0;
+      i < particles.length;
+      i += 1
+    ) {
+      const a = particles[i];
+      for (
+        let j = i + 1;
+        j < particles.length;
+        j += 1
+      ) {
+        const b = particles[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const distanceSq =
+          dx * dx + dy * dy;
+        if (
+          distanceSq >
+          connectionDistanceSq
+        ) {
+          continue;
+        }
+        const distance =
+          Math.sqrt(distanceSq);
+        const strength =
+          1 -
+          distance /
+            connectionDistance;
+        const yellow =
+          a.accent || b.accent;
+        const alpha =
+          strength *
+          (yellow ? 0.18 : 0.095);
+        ctx.strokeStyle = yellow
+          ? `rgba(255,212,0,${alpha})`
+          : `rgba(255,255,255,${alpha})`;
+        ctx.lineWidth =
+          yellow ? 0.7 : 0.55;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+
+    particles.forEach(
+      particle => {
+        const pulse =
+          1 +
+          Math.sin(
+            time * 0.0011 *
+              particle.speed +
+              particle.phase
+          ) *
+          (particle.accent
+            ? 0.16
+            : 0.08);
+        const radius =
+          particle.radius *
+          pulse;
+
+        if (particle.accent) {
+          const gradient =
+            ctx.createRadialGradient(
+              particle.x,
+              particle.y,
+              0,
+              particle.x,
+              particle.y,
+              radius * 5
+            );
+          gradient.addColorStop(
+            0,
+            "rgba(255,212,0,0.16)"
+          );
+          gradient.addColorStop(
+            1,
+            "rgba(255,212,0,0)"
+          );
+          ctx.fillStyle =
+            gradient;
+          ctx.beginPath();
+          ctx.arc(
+            particle.x,
+            particle.y,
+            radius * 5,
+            0,
+            Math.PI * 2
+          );
+          ctx.fill();
+        }
+
+        ctx.fillStyle = particle.accent
+          ? `rgba(255,212,0,${particle.alpha})`
+          : `rgba(255,255,255,${particle.alpha})`;
+        ctx.beginPath();
+        ctx.arc(
+          particle.x,
+          particle.y,
+          radius,
+          0,
+          Math.PI * 2
+        );
+        ctx.fill();
+      }
+    );
+
+    if (
+      pointer.active &&
+      finePointerQuery.matches
+    ) {
+      const hotspotRadius = 190;
+      particles.forEach(
+        particle => {
+          if (!particle.accent) {
+            return;
+          }
+          const distance =
+            Math.hypot(
+              particle.x - pointer.x,
+              particle.y - pointer.y
+            );
+          if (distance >= hotspotRadius) {
+            return;
+          }
+          const strength =
+            1 -
+            distance /
+              hotspotRadius;
+          ctx.strokeStyle =
+            `rgba(255,212,0,${strength * 0.18})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(
+            particle.x,
+            particle.y
+          );
+          ctx.lineTo(
+            pointer.x,
+            pointer.y
+          );
+          ctx.stroke();
+        }
+      );
+    }
+  }
+
+  function animate(time) {
+    if (!running) {
+      return;
+    }
+    updateParticles(time);
+    draw(time);
+    animationFrame =
+      requestAnimationFrame(
+        animate
+      );
+  }
+
+  function handleVisibility() {
+    if (
+      document.hidden
+    ) {
+      running = false;
+      cancelAnimationFrame(
+        animationFrame
+      );
+    } else {
+      running = true;
+      lastTime = performance.now();
+      animationFrame =
+        requestAnimationFrame(
+          animate
+        );
+    }
+  }
+
+  resize();
+
   window.addEventListener(
     "resize",
-    updateRingGeometry,
+    resize,
     { passive: true }
   );
   window.addEventListener(
     "pointermove",
-    event => {
-      pointerActive = true;
-      targetX =
-        event.clientX;
-      targetY =
-        event.clientY;
-      const moveX =
-        event.clientX -
-        previousX;
-      const moveY =
-        event.clientY -
-        previousY;
-      previousX =
-        event.clientX;
-      previousY =
-        event.clientY;
-      targetVelocityX =
-        Math.max(
-          -90,
-          Math.min(
-            90,
-            moveX
-          )
-        );
-      targetVelocityY =
-        Math.max(
-          -90,
-          Math.min(
-            90,
-            moveY
-          )
-        );
-      movementEnergy =
-        Math.max(
-          movementEnergy,
-          clamp01(
-            Math.hypot(
-              moveX,
-              moveY
-            ) / 24
-          )
-        );
-    },
+    updatePointer,
     { passive: true }
   );
-  function settleRings() {
-    pointerActive = false;
-    targetVelocityX = 0;
-    targetVelocityY = 0;
-  }
-  document.documentElement
-    .addEventListener(
-      "mouseleave",
-      settleRings
-    );
   window.addEventListener(
-    "blur",
-    settleRings
+    "pointerleave",
+    clearPointer,
+    { passive: true }
   );
-  function spring(
-    state,
-    valueKey,
-    velocityKey,
-    target,
-    stiffness = .065,
-    damping = .77
+  document.addEventListener(
+    "visibilitychange",
+    handleVisibility
+  );
+
+  if (
+    typeof prefersReducedMotion.addEventListener ===
+    "function"
   ) {
-    state[velocityKey] +=
-      (
-        target -
-        state[valueKey]
-      ) *
-      stiffness;
-    state[velocityKey] *=
-      damping;
-    state[valueKey] +=
-      state[velocityKey];
-  }
-  function animateCircularLines() {
-    pointerX +=
-      (
-        targetX -
-        pointerX
-      ) *
-      .24;
-    pointerY +=
-      (
-        targetY -
-        pointerY
-      ) *
-      .24;
-    velocityX +=
-      (
-        targetVelocityX -
-        velocityX
-      ) *
-      .26;
-    velocityY +=
-      (
-        targetVelocityY -
-        velocityY
-      ) *
-      .26;
-    targetVelocityX *= .80;
-    targetVelocityY *= .80;
-    movementEnergy *= .91;
-    const normalizedX =
-      (
-        pointerX /
-        Math.max(
-          window.innerWidth,
-          1
-        ) -
-        .5
-      ) * 2;
-    const normalizedY =
-      (
-        pointerY /
-        Math.max(
-          window.innerHeight,
-          1
-        ) -
-        .5
-      ) * 2;
-    document.documentElement
-      .style.setProperty(
-        "--circle-field-x",
-        `${normalizedX * 18}px`
-      );
-    document.documentElement
-      .style.setProperty(
-        "--circle-field-y",
-        `${normalizedY * 14}px`
-      );
-    const layerRect =
-      layer.getBoundingClientRect();
-    const localPointerX =
-      pointerX -
-      layerRect.left;
-    const localPointerY =
-      pointerY -
-      layerRect.top;
-    rings.forEach(
-      (state, index) => {
-        const config =
-          state.config;
-        const dx =
-          state.centerX -
-          localPointerX;
-        const dy =
-          state.centerY -
-          localPointerY;
-        const distance =
-          Math.max(
-            Math.hypot(
-              dx,
-              dy
-            ),
-            1
-          );
-        const influenceRadius =
-          config.size * .72 +
-          260;
-        const proximity =
-          clamp01(
-            1 -
-            distance /
-            influenceRadius
-          );
-        const influence =
-          proximity *
-          proximity *
-          (
-            3 -
-            2 * proximity
-          );
-        const awayX =
-          dx /
-          distance;
-        const awayY =
-          dy /
-          distance;
-        const idleDirection =
-          index % 2 === 0
-            ? 1
-            : -1;
-        const pushStrength =
-          influence *
-          config.react *
-          (
-            10 +
-            movementEnergy * 52
-          );
-        const momentumX =
-          velocityX *
-          .34 *
-          influence *
-          config.react *
-          config.dir;
-        const momentumY =
-          velocityY *
-          .34 *
-          influence *
-          config.react *
-          config.dir;
-        const targetRingX =
-          awayX *
-          pushStrength +
-          momentumX +
-          normalizedX *
-          11 *
-          idleDirection;
-        const targetRingY =
-          awayY *
-          pushStrength +
-          momentumY +
-          normalizedY *
-          8 *
-          -idleDirection;
-        const stretch =
-          influence *
-          movementEnergy *
-          .095 *
-          config.react;
-        let targetScaleX = 1;
-        let targetScaleY = 1;
-        if (
-          Math.abs(velocityX) >=
-          Math.abs(velocityY)
-        ) {
-          targetScaleX =
-            1 + stretch;
-          targetScaleY =
-            1 - stretch * .58;
-        } else {
-          targetScaleX =
-            1 - stretch * .58;
-          targetScaleY =
-            1 + stretch;
-        }
-        spring(
-          state,
-          "x",
-          "vx",
-          targetRingX
-        );
-        spring(
-          state,
-          "y",
-          "vy",
-          targetRingY
-        );
-        spring(
-          state,
-          "scaleX",
-          "vScaleX",
-          targetScaleX,
-          .075,
-          .76
-        );
-        spring(
-          state,
-          "scaleY",
-          "vScaleY",
-          targetScaleY,
-          .075,
-          .76
-        );
-        state.x =
-          Math.max(
-            -85,
-            Math.min(
-              85,
-              state.x
-            )
-          );
-        state.y =
-          Math.max(
-            -85,
-            Math.min(
-              85,
-              state.y
-            )
-          );
-        state.scaleX =
-          Math.max(
-            .88,
-            Math.min(
-              1.14,
-              state.scaleX
-            )
-          );
-        state.scaleY =
-          Math.max(
-            .88,
-            Math.min(
-              1.14,
-              state.scaleY
-            )
-          );
-        state.element.style.setProperty(
-          "--ring-x",
-          `${state.x.toFixed(2)}px`
-        );
-        state.element.style.setProperty(
-          "--ring-y",
-          `${state.y.toFixed(2)}px`
-        );
-        state.element.style.setProperty(
-          "--ring-scale-x",
-          state.scaleX.toFixed(4)
-        );
-        state.element.style.setProperty(
-          "--ring-scale-y",
-          state.scaleY.toFixed(4)
-        );
-      }
+    prefersReducedMotion.addEventListener(
+      "change",
+      resize
     );
+  }
+  if (
+    typeof touchQuery.addEventListener ===
+    "function"
+  ) {
+    touchQuery.addEventListener(
+      "change",
+      resize
+    );
+  }
+  if (
+    typeof finePointerQuery.addEventListener ===
+    "function"
+  ) {
+    finePointerQuery.addEventListener(
+      "change",
+      clearPointer
+    );
+  }
+
+  animationFrame =
     requestAnimationFrame(
-      animateCircularLines
+      animate
     );
-  }
-  animateCircularLines();
 }
+
 if (
   document.readyState ===
   "loading"
 ) {
   document.addEventListener(
     "DOMContentLoaded",
-    initCircularLineBackground
+    initParticleNetworkBackground
   );
 } else {
-  initCircularLineBackground();
+  initParticleNetworkBackground();
 }
 function initContinuousMarquee() {
 const marquees =
@@ -1070,281 +1120,114 @@ rotate:
 }
 function resetStudioCinematic() {
 if (
-studioScrollHeading
+  studioScrollHeading
 ) {
-studioScrollHeading
-.style.opacity =
-"";
-studioScrollHeading
-.style.transform =
-"";
-studioScrollHeading
-.style.filter =
-"";
+  studioScrollHeading.style.opacity = "";
+  studioScrollHeading.style.transform = "";
+  studioScrollHeading.style.filter = "";
 }
 if (
-studioScrollGrid
+  studioScrollGrid
 ) {
-studioScrollGrid
-.style.transform =
-"";
+  studioScrollGrid.style.transform = "";
 }
 studioPhotoCards.forEach(
-photo => {
-photo.style.opacity =
-"";
-photo.style.transform =
-"";
-photo.style.filter =
-"";
-photo.classList.remove(
-"is-scroll-faded"
-);
-}
+  photo => {
+    photo.style.opacity = "";
+    photo.style.transform = "";
+    photo.style.filter = "";
+    photo.classList.remove("is-scroll-faded");
+  }
 );
 if (
-studioNextSection
+  studioNextSection
 ) {
-studioNextSection
-.style.opacity =
-"";
-studioNextSection
-.style.transform =
-"";
-studioNextSection
-.style.filter =
-"";
+  studioNextSection.style.opacity = "";
+  studioNextSection.style.transform = "";
+  studioNextSection.style.filter = "";
 }
 }
 function updateStudioCinematic() {
-studioScrollTicking =
-false;
+studioScrollTicking = false;
 if (
-!studioScrollSection ||
-!studioScrollGrid
+  !studioScrollSection ||
+  !studioScrollGrid
 ) {
-return;
+  return;
 }
 const desktopMotion =
-window.matchMedia(
-"(min-width:1051px)"
-).matches;
+  window.matchMedia(
+    "(min-width:1051px)"
+  ).matches;
 if (
-!desktopMotion ||
-prefersReducedMotion
+  !desktopMotion ||
+  prefersReducedMotion
 ) {
-resetStudioCinematic();
-return;
+  resetStudioCinematic();
+  return;
 }
-const viewportHeight =
-window.innerHeight;
+
+const viewportHeight = window.innerHeight;
 const sectionRect =
-studioScrollSection
-.getBoundingClientRect();
-const entranceStart =
-viewportHeight *
-0.96;
-const entranceEnd =
-viewportHeight *
-0.08;
-const entranceProgress =
-clamp01(
-(
-entranceStart -
-sectionRect.top
-) /
-Math.max(
-entranceStart -
-entranceEnd,
-1
-)
+  studioScrollSection.getBoundingClientRect();
+
+// ENTRY ONLY: keep the cinematic entrance, then return
+// completely to the normal page flow. There is NO exit animation.
+const entranceStart = viewportHeight * 0.96;
+const entranceEnd = viewportHeight * 0.08;
+const entranceProgress = clamp01(
+  (entranceStart - sectionRect.top) /
+  Math.max(entranceStart - entranceEnd, 1)
 );
+
+// Once the entrance is complete, remove every inline cinematic
+// style so CSS controls the gallery normally while it scrolls away.
+if (entranceProgress >= 0.999) {
+  resetStudioCinematic();
+  return;
+}
+
 const entranceEase =
-easeInOutCubic(
-entranceProgress
-);
-const stickyDistance =
-Math.max(
-studioScrollSection
-.offsetHeight -
-viewportHeight,
-1
-);
-const stickyProgress =
-clamp01(
--sectionRect.top /
-stickyDistance
-);
-studioScrollGrid
-.style.transform =
-"translate3d(0,0,0) scale(1)";
+  easeInOutCubic(entranceProgress);
 const spreadPositions =
-getStudioSpreadPositions();
+  getStudioSpreadPositions();
+
+studioScrollGrid.style.transform =
+  "translate3d(0,0,0) scale(1)";
+
 studioPhotoCards.forEach(
-(
-photo,
-index
-) => {
-const spread =
-spreadPositions[
-index
-] ||
-{
-x: 0,
-y: 0,
-rotate: 0
-};
-const photoX =
-lerp(
-spread.x,
-0,
-entranceEase
+  (photo, index) => {
+    const spread =
+      spreadPositions[index] ||
+      { x: 0, y: 0, rotate: 0 };
+
+    const photoX =
+      lerp(spread.x, 0, entranceEase);
+    const photoY =
+      lerp(spread.y, 0, entranceEase);
+    const photoRotation =
+      lerp(spread.rotate, 0, entranceEase);
+
+    photo.style.opacity =
+      entranceEase;
+    photo.style.transform =
+      `translate3d(${photoX}px,${photoY}px,0) rotate(${photoRotation}deg) scale(1)`;
+    photo.style.filter =
+      `blur(${lerp(8, 0, entranceEase)}px)`;
+    photo.classList.remove("is-scroll-faded");
+  }
 );
-let photoY =
-lerp(
-spread.y,
-0,
-entranceEase
-);
-const photoRotation =
-lerp(
-spread.rotate,
-0,
-entranceEase
-);
-const entranceOpacity =
-entranceEase;
-const entranceBlur =
-lerp(
-8,
-0,
-entranceEase
-);
-const fadeSequenceStart =
-0.02;
-const fadeStep =
-0.080;
-const fadeDuration =
-0.11;
-const photoFadeStart =
-fadeSequenceStart +
-index *
-fadeStep;
-const photoFadeEnd =
-photoFadeStart +
-fadeDuration;
-const photoFadeProgress =
-rangeProgress(
-stickyProgress,
-photoFadeStart,
-photoFadeEnd
-);
-const photoFadeEase =
-easeInOutCubic(
-photoFadeProgress
-);
-photoY +=
-lerp(
-0,
--14,
-photoFadeEase
-);
-const finalOpacity =
-entranceOpacity *
-(
-1 -
-photoFadeEase
-);
-photo.style.opacity =
-finalOpacity;
-photo.style.transform =
-`translate3d(
-${photoX}px,
-${photoY}px,
-0
-)
-rotate(
-${photoRotation}deg
-)
-scale(1)`;
-photo.style.filter =
-`blur(
-${entranceBlur}px
-)`;
-photo.classList.toggle(
-"is-scroll-faded",
-finalOpacity <=
-0.05
-);
+
+// Heading and following section stay completely normal.
+if (studioScrollHeading) {
+  studioScrollHeading.style.opacity = "";
+  studioScrollHeading.style.transform = "";
+  studioScrollHeading.style.filter = "";
 }
-);
-if (
-studioScrollHeading
-) {
-const progress =
-rangeProgress(
-stickyProgress,
-0.02,
-0.27
-);
-const ease =
-easeInOutCubic(
-progress
-);
-studioScrollHeading
-.style.opacity =
-lerp(
-1,
-0,
-ease
-);
-studioScrollHeading
-.style.transform =
-`translate3d(
-0,
-${lerp(
-0,
--54,
-ease
-)}px,
-0
-)`;
-studioScrollHeading
-.style.filter =
-`blur(
-${lerp(
-0,
-4,
-ease
-)}px
-)`;
-}
-if (
-studioNextSection
-) {
-const progress =
-rangeProgress(
-stickyProgress,
-0.04,
-0.74
-);
-const ease =
-easeInOutCubic(
-progress
-);
-studioNextSection
-.style.opacity =
-lerp(
-0,
-1,
-ease
-);
-studioNextSection
-.style.transform =
-"";
-studioNextSection
-.style.filter =
-"";
+if (studioNextSection) {
+  studioNextSection.style.opacity = "";
+  studioNextSection.style.transform = "";
+  studioNextSection.style.filter = "";
 }
 }
 function requestStudioCinematicUpdate() {
