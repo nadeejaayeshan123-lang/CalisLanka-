@@ -1,0 +1,31 @@
+from django.contrib import admin
+from django.utils.html import format_html
+
+from .models import GalleryItem
+
+
+@admin.register(GalleryItem)
+class GalleryItemAdmin(admin.ModelAdmin):
+    list_display = ("preview", "title", "media_type", "order", "is_active", "uploaded_at")
+    list_display_links = ("preview", "title")
+    list_editable = ("order", "is_active")
+    list_filter = ("media_type", "is_active")
+    search_fields = ("title",)
+    ordering = ("order", "-uploaded_at")
+    fields = ("media_type", "title", "image", "video", "order", "is_active")
+
+    @admin.display(description="Preview")
+    def preview(self, obj):
+        if obj.media_type == GalleryItem.MediaType.PHOTO and obj.image:
+            return format_html(
+                '<img src="{}" style="height:56px;width:auto;border-radius:6px;'
+                'object-fit:cover;" />',
+                obj.image.url,
+            )
+        if obj.media_type == GalleryItem.MediaType.VIDEO and obj.video:
+            return format_html(
+                '<video src="{}" style="height:56px;width:auto;border-radius:6px;" '
+                'muted></video>',
+                obj.video.url,
+            )
+        return "—"

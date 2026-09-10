@@ -2477,3 +2477,38 @@
         padding-top:65px!important;
       }
     }
+
+    /* STUDIO IN MOTION — video gallery (admin-managed, mirrors .studio-photo) */
+    .studio-video-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:16px;
+    }
+
+    .studio-video{
+      margin:0;
+      position:relative;
+      overflow:hidden;
+      border-radius:17px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#0e0e0e;
+    }
+
+    .studio-video video{
+      display:block;
+      width:100%;
+      height:260px;
+      object-fit:cover;
+      background:#000;
+    }
+
+    .studio-video .studio-photo-label{
+      opacity:1;
+      transform:none;
+    }
+
+    @media(max-width:760px){
+      .studio-video video{
+        height:220px;
+      }
+    }
