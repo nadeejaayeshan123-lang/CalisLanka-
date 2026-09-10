@@ -6,7 +6,8 @@ from django.dispatch import receiver
 
 
 class GalleryItem(models.Model):
-    """A single photo or video shown in the 'Inside the Studio' section.
+    """A single photo or video shown on the homepage — either the hero
+    banner, or one of the 7 'Inside the Studio' gallery slots.
 
     Managed entirely from the Django admin (/admin/) — staff can upload
     new items, reorder them, temporarily hide them (is_active), or
@@ -17,6 +18,10 @@ class GalleryItem(models.Model):
         PHOTO = "photo", "Photo"
         VIDEO = "video", "Video"
 
+    class Placement(models.TextChoices):
+        HERO = "hero", "Hero banner (top of homepage)"
+        GALLERY = "gallery", "Inside the Studio gallery"
+
     title = models.CharField(
         max_length=120,
         blank=True,
@@ -24,6 +29,12 @@ class GalleryItem(models.Model):
     )
     media_type = models.CharField(
         max_length=5, choices=MediaType.choices, default=MediaType.PHOTO
+    )
+    placement = models.CharField(
+        max_length=7,
+        choices=Placement.choices,
+        default=Placement.GALLERY,
+        help_text="Where on the homepage this appears.",
     )
     image = models.ImageField(
         upload_to="gallery/photos/",
@@ -39,8 +50,8 @@ class GalleryItem(models.Model):
     )
     order = models.PositiveIntegerField(
         default=0,
-        help_text="Lower numbers appear first. Photo slots 1-7 map to the "
-        "homepage grid in this order.",
+        help_text="Gallery items only: 1-7, matching the numbered grid "
+        "positions. Ignored for the hero banner.",
     )
     is_active = models.BooleanField(
         default=True,
@@ -49,7 +60,7 @@ class GalleryItem(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        ordering = ["order", "-uploaded_at"]
+        ordering = ["placement", "order", "-uploaded_at"]
 
     def __str__(self):
         return self.title or f"{self.get_media_type_display()} #{self.pk}"
@@ -58,6 +69,13 @@ class GalleryItem(models.Model):
     def file_field(self):
         """Return whichever file field applies to this item's media type."""
         return self.image if self.media_type == self.MediaType.PHOTO else self.video
+
+    @property
+    def slot_label(self):
+        """Human-readable slot name, e.g. 'Hero banner' or 'Gallery #3'."""
+        if self.placement == self.Placement.HERO:
+            return "Hero banner"
+        return f"Gallery #{self.order}"
 
 
 def _delete_file(field_file):

@@ -3,7 +3,11 @@ from django.shortcuts import render
 from .models import GalleryItem
 
 # Shown only until the first real photos are uploaded from /admin/, so the
-# gallery never looks broken/empty on a fresh install.
+# hero and gallery never look broken/empty on a fresh install.
+_PLACEHOLDER_HERO = {
+    "url": "https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=1400&q=90",
+    "title": "CalisLanka athlete",
+}
 _PLACEHOLDER_PHOTOS = [
     {"url": "https://images.unsplash.com/photo-1538805060514-97d9cc17730c?auto=format&fit=crop&w=1200&q=88", "title": "CalisLanka photo 1"},
     {"url": "https://images.unsplash.com/photo-1599058917212-d750089bc07e?auto=format&fit=crop&w=1200&q=88", "title": "CalisLanka photo 2"},
@@ -16,8 +20,27 @@ _PLACEHOLDER_PHOTOS = [
 
 
 def home(request):
+    hero_item = (
+        GalleryItem.objects.filter(
+            placement=GalleryItem.Placement.HERO,
+            media_type=GalleryItem.MediaType.PHOTO,
+            is_active=True,
+        )
+        .order_by("-uploaded_at")
+        .first()
+    )
+    hero_photo = (
+        {"url": hero_item.image.url, "title": hero_item.title or "CalisLanka athlete"}
+        if hero_item
+        else _PLACEHOLDER_HERO
+    )
+
     photos = list(
-        GalleryItem.objects.filter(media_type=GalleryItem.MediaType.PHOTO, is_active=True)[:7]
+        GalleryItem.objects.filter(
+            placement=GalleryItem.Placement.GALLERY,
+            media_type=GalleryItem.MediaType.PHOTO,
+            is_active=True,
+        )[:7]
     )
     studio_photos = (
         [{"url": p.image.url, "title": p.title or f"CalisLanka photo {i}"} for i, p in enumerate(photos, start=1)]
@@ -32,7 +55,11 @@ def home(request):
     return render(
         request,
         "website/home.html",
-        {"studio_photos": studio_photos, "studio_videos": studio_videos},
+        {
+            "hero_photo": hero_photo,
+            "studio_photos": studio_photos,
+            "studio_videos": studio_videos,
+        },
     )
 
 

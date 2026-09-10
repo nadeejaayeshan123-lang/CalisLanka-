@@ -6,13 +6,13 @@ from .models import GalleryItem
 
 @admin.register(GalleryItem)
 class GalleryItemAdmin(admin.ModelAdmin):
-    list_display = ("preview", "title", "media_type", "order", "is_active", "uploaded_at")
-    list_display_links = ("preview", "title")
-    list_editable = ("order", "is_active")
-    list_filter = ("media_type", "is_active")
+    list_display = ("preview", "slot", "title", "media_type", "is_active", "uploaded_at")
+    list_display_links = ("preview", "slot", "title")
+    list_editable = ("is_active",)
+    list_filter = ("placement", "media_type", "is_active")
     search_fields = ("title",)
-    ordering = ("order", "-uploaded_at")
-    fields = ("media_type", "title", "image", "video", "order", "is_active")
+    ordering = ("placement", "order", "-uploaded_at")
+    fields = ("placement", "media_type", "title", "image", "video", "order", "is_active")
 
     @admin.display(description="Preview")
     def preview(self, obj):
@@ -29,3 +29,7 @@ class GalleryItemAdmin(admin.ModelAdmin):
                 obj.video.url,
             )
         return "—"
+
+    @admin.display(description="Slot", ordering="order")
+    def slot(self, obj):
+        return obj.slot_label
