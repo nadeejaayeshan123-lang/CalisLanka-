@@ -24,15 +24,21 @@ load_dotenv(BASE_DIR / ".env", override=True)
 
 # Development-only fallback.
 # For production, SECRET_KEY should be stored in .env.
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "django-insecure-development-only-calislanka",
-)
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY is not configured. "
+        "Add SECRET_KEY to your .env file."
+    )
 
-ALLOWED_HOSTS = []
+DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() == "true"
 
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
 
 # ============================================================
 # APPLICATIONS
@@ -122,7 +128,23 @@ DATABASES = {
 # PASSWORD VALIDATION
 # ============================================================
 
-AUTH_PASSWORD_VALIDATORS = []
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+    {
+        "NAME": "website.validators.StrongPasswordValidator",
+    },
+]
 
 
 # ============================================================
@@ -218,3 +240,51 @@ ADMIN_BOOKING_EMAIL = os.getenv(
     "ADMIN_BOOKING_EMAIL",
     "",
 )
+
+# ============================================================
+# SECURITY HEADERS / COOKIES
+# ============================================================
+
+SECURE_SSL_REDIRECT = os.getenv(
+    "DJANGO_SECURE_SSL_REDIRECT",
+    "False",
+).lower() == "true"
+
+SESSION_COOKIE_SECURE = os.getenv(
+    "DJANGO_SESSION_COOKIE_SECURE",
+    "False",
+).lower() == "true"
+
+CSRF_COOKIE_SECURE = os.getenv(
+    "DJANGO_CSRF_COOKIE_SECURE",
+    "False",
+).lower() == "true"
+
+SECURE_HSTS_SECONDS = int(
+    os.getenv(
+        "DJANGO_SECURE_HSTS_SECONDS",
+        "0",
+    )
+)
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv(
+    "DJANGO_SECURE_HSTS_INCLUDE_SUBDOMAINS",
+    "False",
+).lower() == "true"
+
+SECURE_HSTS_PRELOAD = os.getenv(
+    "DJANGO_SECURE_HSTS_PRELOAD",
+    "False",
+).lower() == "true"
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+X_FRAME_OPTIONS = "DENY"
+
+SECURE_REFERRER_POLICY = "same-origin"
+
+# Session security
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = "Lax"
